@@ -10,11 +10,17 @@ extern "C" {
 #include "./SDL2-2.0.10/include/SDL_main.h"
 }
 
+#define PLAYER_SIZE 25      // jeden kwadrat, z ktorego sklada sie waz ma wymiary 25x25 pikseli
+
+#define Y_BORDER ( SCREEN_HEIGHT / PLAYER_SIZE )        // wymiary mapy, liczone w kwadratach
+#define X_BORDER ( SCREEN_WIDTH / PLAYER_SIZE )
+
 #define SCREEN_WIDTH	670
-#define SCREEN_HEIGHT	900
+#define SCREEN_HEIGHT	920
+
 #define BORDER 10
-#define PLAYER_SIZE 25
-#define FPS 20
+#define FPS 10
+
 
 using namespace std;
 
@@ -35,23 +41,39 @@ class Sprite{
         int origin_x, origin_y;
 
     public:
+
+        int x_pos, y_pos;
+
         Sprite( Uint32 color, int x, int y, int w = PLAYER_SIZE, int h = PLAYER_SIZE )
         {
+
             image = SDL_CreateRGBSurface( 0, w, h, 32, 0, 0, 0, 0);
 
             SDL_FillRect( image, NULL, color);
 
             rect = image->clip_rect;
 
-            origin_x = rect.w/2;
-            origin_y = rect.h/2;
+            rect.x = x * PLAYER_SIZE + BORDER;
+            rect.y = y * PLAYER_SIZE + BORDER;
 
-            rect.x = x;
-            rect.y = y;
+            x_pos = x;
+            y_pos = y;
+
         }
+
 
         void update()   // can be overriden
         {
+
+        }
+
+        void move(int y_move, int x_move){
+
+            rect.x += x_move * PLAYER_SIZE;
+            rect.y += y_move * PLAYER_SIZE;
+
+            x_pos += x_move;
+            y_pos += y_move;
 
         }
         
@@ -69,6 +91,24 @@ class Sprite{
         }
 };
 
+class Background : public Sprite{
+
+    public: 
+        Background( Uint32 color, int x, int y, int w, int h):
+        Sprite( color, x, y, w, h )
+        {
+
+            image = SDL_CreateRGBSurface( 0, w, h, 32, 0, 0, 0, 0);
+
+            SDL_FillRect( image, NULL, color);
+
+            rect = image->clip_rect;
+
+            rect.x = x;
+            rect.y = y;
+
+        }
+};
 
 class Block : public Sprite{
 
@@ -127,10 +167,10 @@ int main(){
 	Uint32 grass = SDL_MapRGB( screen-> format, 50, 50, 100);
 
     Uint32 green = SDL_MapRGB( screen->format, 50, 255, 50);
-    Sprite object_green( green, SCREEN_WIDTH/2 - 100, SCREEN_HEIGHT/2 - 100);
+    Sprite object_green( green, 0, 0);
 
 	// tlo, po ktorym porusza sie waz
-    Sprite background( grass, BORDER, BORDER, SCREEN_WIDTH - ( 2 * BORDER ), SCREEN_HEIGHT - (2 * BORDER ) );
+    Background background( grass, BORDER, BORDER, SCREEN_WIDTH - ( 2 * BORDER ), SCREEN_HEIGHT - (2 * BORDER ) );
     background.draw( screen );
 
     SDL_UpdateWindowSurface( window );
@@ -138,9 +178,13 @@ int main(){
     SDL_Event event;
     bool running = 1;
     int iter = 0;
+
+    int x_move = 1, y_move = 0;
+
     while(running)
     {
 		Uint32 starting_tick = SDL_GetTicks();
+
         while( SDL_PollEvent(&event))
         {
 
@@ -154,18 +198,22 @@ int main(){
 
 				switch(event.key.keysym.sym){
 					case SDLK_DOWN:
-						// to do
+						y_move = 1;
+                        x_move = 0;
 						break;
 					case SDLK_UP:
-						// to do
+						y_move = -1;
+                        x_move = 0;
 						break;
 					case SDLK_LEFT:
-						// to do
+						y_move = 0;
+                        x_move = -1;
 						break;
 					case SDLK_RIGHT:
-						// to do
+						y_move = 0;
+                        x_move = 1;
 						break;
-			}
+			    }
 			
 			}
 
@@ -173,15 +221,63 @@ int main(){
 
         }
 
-		//
-		object_green.draw( screen );
-		SDL_UpdateWindowSurface( window );
-		//
 		cap_framerate(starting_tick);
 		Uint32 current_time = SDL_GetTicks() - starting_tick;
 		printf("frame time: %d ms (should be: %d ms) \n", current_time, 1000/FPS);
+
+        // jesli idzie w lewo i trafi na lewa krawedz
+        if( ( x_move == -1 ) && ( object_green.x_pos == 0 ) ){
+            // jesli jest na gornej krawedzi, nie moze isc w swoje prawo
+            if( object_green.y_pos == 0){
+                x_move = 0;
+                y_move = 1;
+            }
+            else{
+                x_move = 0;
+                y_move = -1;
+            }
+
+        }
+        // idzie w prawo i prawa kwawedz
+        if( ( x_move == 1 ) && ( object_green.x_pos == X_BORDER - 1 ) ){
+            if( object_green.y_pos == Y_BORDER - 1){
+                x_move = 0;
+                y_move = -1;
+            }
+            else{
+                x_move = 0;
+                y_move = 1;
+            }
+        }
+        // idzie w gore i gorna krawedz
+        if( ( y_move == -1 ) && ( object_green.y_pos == 0 ) ){
+            if( object_green.x_pos == X_BORDER - 1){
+                x_move = -1;
+                y_move = 0;
+                printf("DEBUG \n");
+            }
+            else{
+                x_move = 1;
+                y_move = 0;
+            }
+        }
+        // idzie w dol i dolna krawedz
+        if( ( y_move == 1 ) && ( object_green.y_pos == Y_BORDER - 1 ) ){
+            if( object_green.x_pos == 0){
+                x_move = 1;
+                y_move = 0;
+            }
+            else{
+                x_move = -1;
+                y_move = 0;
+            }
+        }
+
+        object_green.move( y_move, x_move );
+
+        background.draw( screen );
+        object_green.draw( screen );
 		SDL_UpdateWindowSurface( window );
-		object_green.draw( screen );
 
     }
  
