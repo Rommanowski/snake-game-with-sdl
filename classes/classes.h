@@ -20,9 +20,6 @@ class Sprite{
 
         Sprite( Uint32 color, int x, int y, int w = PLAYER_SIZE, int h = PLAYER_SIZE );
 
-
-        virtual void update();   // can be overriden
-
         void move(int y_move, int x_move);
         
         void draw( SDL_Surface *destination);
@@ -39,18 +36,17 @@ class Background : public Sprite{
         Background( Uint32 color, int x, int y, int w, int h);
 };
 
-class Block : public Sprite{
+class Snake{
+
+    private:
 
     public:
-        Block( Uint32 color, int x, int y, int w = 48, int h = 48 );
+        // constructor
+        Snake(Sprite *origin);
 
-	int x_pos, y_pos;
-	int x_dir, y_dir;
-
-    void update_properties();
-
-    void set_position( int x, int y);
-
+        Sprite *current;
+        Sprite *next;
 };
+
 
 #endif

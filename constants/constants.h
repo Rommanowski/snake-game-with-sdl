@@ -10,10 +10,10 @@
 #define Y_BORDER 32         // wymiary mapy, liczone w kwadratach
 #define X_BORDER 25
 
-#define SCREEN_WIDTH ( ( X_BORDER * PLAYER_SIZE ) + ( 2 * BORDER ))	//670
-#define SCREEN_HEIGHT ( ( Y_BORDER * PLAYER_SIZE) + ( 2 * BORDER ))	//920
+#define SCREEN_WIDTH ( ( X_BORDER * PLAYER_SIZE ) + ( 2 * EDGE ))	//670
+#define SCREEN_HEIGHT ( ( Y_BORDER * PLAYER_SIZE) + ( 2 * EDGE ))	//920
 
-#define BORDER 10
+#define EDGE 10
 #define FPS 10
 
 #endif // CONSTANTS_H

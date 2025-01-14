@@ -12,19 +12,10 @@ extern "C" {
 
 using namespace std;
 
-void cap_framerate( Uint32 starting_tick)
-{
-    if( ( 1000/FPS) > ( SDL_GetTicks() - starting_tick ) )
-        {
-            SDL_Delay( 1000/FPS - (SDL_GetTicks() - starting_tick) );
-        }
-}
-
-
 int main(){
     SDL_Init( SDL_INIT_EVERYTHING);
+    // init the window
     SDL_Window *window = NULL;
-
     window = SDL_CreateWindow( "Wafel! <3",
                                 SDL_WINDOWPOS_UNDEFINED,
                                 SDL_WINDOWPOS_UNDEFINED,
@@ -39,17 +30,19 @@ int main(){
 
     SDL_Surface *screen = SDL_GetWindowSurface( window );
 
-	// obwodka dookola
+	// colors
     Uint32 gray = SDL_MapRGB( screen->format, 100, 100, 100);
-	SDL_FillRect( screen, NULL, gray);
-
 	Uint32 grass = SDL_MapRGB( screen-> format, 50, 50, 100);
-
     Uint32 green = SDL_MapRGB( screen->format, 50, 255, 50);
+    // colors
+
+    // gray background
+    SDL_FillRect( screen, NULL, gray);
+
     Sprite head( green, 0, 0);
 
 	// tlo, po ktorym porusza sie waz
-    Background background( grass, BORDER, BORDER, SCREEN_WIDTH - ( 2 * BORDER ), SCREEN_HEIGHT - (2 * BORDER ) );
+    Background background( grass, EDGE, EDGE, SCREEN_WIDTH - ( 2 * EDGE ), SCREEN_HEIGHT - (2 * EDGE ) );
     background.draw( screen );
 
     SDL_UpdateWindowSurface( window );
@@ -66,38 +59,7 @@ int main(){
 
         while( SDL_PollEvent(&event))
         {
-
-            if( ( event.type == SDL_QUIT ) || ( event.key.keysym.sym == SDLK_ESCAPE )){
-                running = 0;
-				printf("ESCAPE! \n");
-                break;
-            }
-
-			if( event.type == SDL_KEYDOWN ){
-
-				switch(event.key.keysym.sym){
-					case SDLK_DOWN:
-						y_move = 1;
-                        x_move = 0;
-						break;
-					case SDLK_UP:
-						y_move = -1;
-                        x_move = 0;
-						break;
-					case SDLK_LEFT:
-						y_move = 0;
-                        x_move = -1;
-						break;
-					case SDLK_RIGHT:
-						y_move = 0;
-                        x_move = 1;
-						break;
-			    }
-			
-			}
-
-			// tutaj bedzie obsluga eventow
-
+            handleKeys( &x_move, &y_move, &running, event);
         }
 
 		cap_framerate(starting_tick);
