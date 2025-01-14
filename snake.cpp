@@ -7,6 +7,8 @@ extern "C" {
 }
 
 #include "constants/constants.h"
+#include "classes/classes.h"
+#include "functions/functions.h"
 
 using namespace std;
 
@@ -17,118 +19,8 @@ void cap_framerate( Uint32 starting_tick)
             SDL_Delay( 1000/FPS - (SDL_GetTicks() - starting_tick) );
         }
 }
-// lol
-class Sprite{
-    
-    protected:
-        SDL_Surface *image;
-        SDL_Rect rect;
-
-        int origin_x, origin_y;
-
-    public:
-
-        int x_pos, y_pos;
-
-        Sprite( Uint32 color, int x, int y, int w = PLAYER_SIZE, int h = PLAYER_SIZE )
-        {
-
-            image = SDL_CreateRGBSurface( 0, w, h, 32, 0, 0, 0, 0);
-
-            SDL_FillRect( image, NULL, color);
-
-            rect = image->clip_rect;
-
-            rect.x = x * PLAYER_SIZE + BORDER;
-            rect.y = y * PLAYER_SIZE + BORDER;
-
-            x_pos = x;
-            y_pos = y;
-
-        }
 
 
-        void update()   // can be overriden
-        {
-
-        }
-
-        void move(int y_move, int x_move){
-
-            rect.x += x_move * PLAYER_SIZE;
-            rect.y += y_move * PLAYER_SIZE;
-
-            x_pos += x_move;
-            y_pos += y_move;
-
-        }
-        
-        void draw( SDL_Surface *destination)
-        {
-            SDL_BlitSurface( image, NULL, destination, &rect );
-        }
-
-        SDL_Surface* get_image( ) const{
-            return image;
-        }
-
-        bool operator==( const Sprite &other ) const{
-            return ( image == other.get_image() );
-        }
-};
-
-
-class Background : public Sprite{
-
-    public: 
-        Background( Uint32 color, int x, int y, int w, int h):
-        Sprite( color, x, y, w, h )
-        {
-
-            image = SDL_CreateRGBSurface( 0, w, h, 32, 0, 0, 0, 0);
-
-            SDL_FillRect( image, NULL, color);
-
-            rect = image->clip_rect;
-
-            rect.x = x;
-            rect.y = y;
-
-        }
-};
-
-class Block : public Sprite{
-
-    public:
-        Block( Uint32 color, int x, int y, int w = 48, int h = 48 ) : 
-        Sprite ( color, x, y, w, h ){
-
-            update_properties();
-
-        }
-
-	int x_pos, y_pos;
-	int x_dir, y_dir;
-
-    void update_properties(){
-        origin_x = 0;
-        origin_y = 0;
-
-        set_position( rect.x, rect.y );
-    }
-
-    void set_position( int x, int y){
-        rect.x = x; // - origin_x;
-        rect.y = y; // - origin_y;
-    }
-
-};
-
-int mainLoop(){
-
-
-	return 0;
-}
 int main(){
     SDL_Init( SDL_INIT_EVERYTHING);
     SDL_Window *window = NULL;
@@ -212,53 +104,7 @@ int main(){
 		Uint32 current_time = SDL_GetTicks() - starting_tick;
 		printf("frame time: %d ms (should be: %d ms) \n", current_time, 1000/FPS);
 
-        // // jesli idzie w lewo i trafi na lewa krawedz
-        // if( ( x_move == -1 ) && ( head.x_pos == 0 ) ){
-        //     // jesli jest na gornej krawedzi, nie moze isc w swoje prawo
-        //     if( head.y_pos == 0){
-        //         x_move = 0;
-        //         y_move = 1;
-        //     }
-        //     else{
-        //         x_move = 0;
-        //         y_move = -1;
-        //     }
-
-        // }
-        // // idzie w prawo i prawa kwawedz
-        // if( ( x_move == 1 ) && ( head.x_pos == X_BORDER - 1 ) ){
-        //     if( head.y_pos == Y_BORDER - 1){
-        //         x_move = 0;
-        //         y_move = -1;
-        //     }
-        //     else{
-        //         x_move = 0;
-        //         y_move = 1;
-        //     }
-        // }
-        // // idzie w gore i gorna krawedz
-        // if( ( y_move == -1 ) && ( head.y_pos == 0 ) ){
-        //     if( head.x_pos == X_BORDER - 1){
-        //         x_move = -1;
-        //         y_move = 0;
-        //         printf("DEBUG \n");
-        //     }
-        //     else{
-        //         x_move = 1;
-        //         y_move = 0;
-        //     }
-        // }
-        // // idzie w dol i dolna krawedz
-        // if( ( y_move == 1 ) && ( head.y_pos == Y_BORDER - 1 ) ){
-        //     if( head.x_pos == 0){
-        //         x_move = 1;
-        //         y_move = 0;
-        //     }
-        //     else{
-        //         x_move = -1;
-        //         y_move = 0;
-        //     }
-        // }
+        handleCorners(head, &x_move, &y_move);
 
         head.move( y_move, x_move );
 
