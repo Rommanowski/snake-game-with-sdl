@@ -12,11 +12,11 @@ extern "C" {
 
 #define PLAYER_SIZE 25      // jeden kwadrat, z ktorego sklada sie waz ma wymiary 25x25 pikseli
 
-#define Y_BORDER ( SCREEN_HEIGHT / PLAYER_SIZE )        // wymiary mapy, liczone w kwadratach
-#define X_BORDER ( SCREEN_WIDTH / PLAYER_SIZE )
+#define Y_BORDER 32              // ( SCREEN_HEIGHT / PLAYER_SIZE )        // wymiary mapy, liczone w kwadratach
+#define X_BORDER 25             // ( SCREEN_WIDTH / PLAYER_SIZE )
 
-#define SCREEN_WIDTH	670
-#define SCREEN_HEIGHT	920
+#define SCREEN_WIDTH ( ( X_BORDER * PLAYER_SIZE ) + ( 2 * BORDER ))	//670
+#define SCREEN_HEIGHT ( ( Y_BORDER * PLAYER_SIZE) + ( 2 * BORDER ))	//920
 
 #define BORDER 10
 #define FPS 10
