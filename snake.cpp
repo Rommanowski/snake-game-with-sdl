@@ -25,6 +25,7 @@ void cap_framerate( Uint32 starting_tick)
             SDL_Delay( 1000/FPS - (SDL_GetTicks() - starting_tick) );
         }
 }
+// lol
 class Sprite{
     
     protected:
