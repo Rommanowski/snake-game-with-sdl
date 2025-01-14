@@ -1,26 +1,12 @@
-#define _USE_MATH_DEFINES
-#include <math.h>
 #include <stdio.h>
-#include <string.h>
 #include <iostream>
-#include <vector>
 
 extern "C" {
 #include "./SDL2-2.0.10/include/SDL.h"
 #include "./SDL2-2.0.10/include/SDL_main.h"
 }
 
-#define PLAYER_SIZE 25      // jeden kwadrat, z ktorego sklada sie waz ma wymiary 25x25 pikseli
-
-#define Y_BORDER 32              // ( SCREEN_HEIGHT / PLAYER_SIZE )        // wymiary mapy, liczone w kwadratach
-#define X_BORDER 25             // ( SCREEN_WIDTH / PLAYER_SIZE )
-
-#define SCREEN_WIDTH ( ( X_BORDER * PLAYER_SIZE ) + ( 2 * BORDER ))	//670
-#define SCREEN_HEIGHT ( ( Y_BORDER * PLAYER_SIZE) + ( 2 * BORDER ))	//920
-
-#define BORDER 10
-#define FPS 10
-
+#include "constants/constants.h"
 
 using namespace std;
 
@@ -90,6 +76,7 @@ class Sprite{
             return ( image == other.get_image() );
         }
 };
+
 
 class Background : public Sprite{
 
@@ -167,7 +154,7 @@ int main(){
 	Uint32 grass = SDL_MapRGB( screen-> format, 50, 50, 100);
 
     Uint32 green = SDL_MapRGB( screen->format, 50, 255, 50);
-    Sprite object_green( green, 0, 0);
+    Sprite head( green, 0, 0);
 
 	// tlo, po ktorym porusza sie waz
     Background background( grass, BORDER, BORDER, SCREEN_WIDTH - ( 2 * BORDER ), SCREEN_HEIGHT - (2 * BORDER ) );
@@ -225,58 +212,58 @@ int main(){
 		Uint32 current_time = SDL_GetTicks() - starting_tick;
 		printf("frame time: %d ms (should be: %d ms) \n", current_time, 1000/FPS);
 
-        // jesli idzie w lewo i trafi na lewa krawedz
-        if( ( x_move == -1 ) && ( object_green.x_pos == 0 ) ){
-            // jesli jest na gornej krawedzi, nie moze isc w swoje prawo
-            if( object_green.y_pos == 0){
-                x_move = 0;
-                y_move = 1;
-            }
-            else{
-                x_move = 0;
-                y_move = -1;
-            }
+        // // jesli idzie w lewo i trafi na lewa krawedz
+        // if( ( x_move == -1 ) && ( head.x_pos == 0 ) ){
+        //     // jesli jest na gornej krawedzi, nie moze isc w swoje prawo
+        //     if( head.y_pos == 0){
+        //         x_move = 0;
+        //         y_move = 1;
+        //     }
+        //     else{
+        //         x_move = 0;
+        //         y_move = -1;
+        //     }
 
-        }
-        // idzie w prawo i prawa kwawedz
-        if( ( x_move == 1 ) && ( object_green.x_pos == X_BORDER - 1 ) ){
-            if( object_green.y_pos == Y_BORDER - 1){
-                x_move = 0;
-                y_move = -1;
-            }
-            else{
-                x_move = 0;
-                y_move = 1;
-            }
-        }
-        // idzie w gore i gorna krawedz
-        if( ( y_move == -1 ) && ( object_green.y_pos == 0 ) ){
-            if( object_green.x_pos == X_BORDER - 1){
-                x_move = -1;
-                y_move = 0;
-                printf("DEBUG \n");
-            }
-            else{
-                x_move = 1;
-                y_move = 0;
-            }
-        }
-        // idzie w dol i dolna krawedz
-        if( ( y_move == 1 ) && ( object_green.y_pos == Y_BORDER - 1 ) ){
-            if( object_green.x_pos == 0){
-                x_move = 1;
-                y_move = 0;
-            }
-            else{
-                x_move = -1;
-                y_move = 0;
-            }
-        }
+        // }
+        // // idzie w prawo i prawa kwawedz
+        // if( ( x_move == 1 ) && ( head.x_pos == X_BORDER - 1 ) ){
+        //     if( head.y_pos == Y_BORDER - 1){
+        //         x_move = 0;
+        //         y_move = -1;
+        //     }
+        //     else{
+        //         x_move = 0;
+        //         y_move = 1;
+        //     }
+        // }
+        // // idzie w gore i gorna krawedz
+        // if( ( y_move == -1 ) && ( head.y_pos == 0 ) ){
+        //     if( head.x_pos == X_BORDER - 1){
+        //         x_move = -1;
+        //         y_move = 0;
+        //         printf("DEBUG \n");
+        //     }
+        //     else{
+        //         x_move = 1;
+        //         y_move = 0;
+        //     }
+        // }
+        // // idzie w dol i dolna krawedz
+        // if( ( y_move == 1 ) && ( head.y_pos == Y_BORDER - 1 ) ){
+        //     if( head.x_pos == 0){
+        //         x_move = 1;
+        //         y_move = 0;
+        //     }
+        //     else{
+        //         x_move = -1;
+        //         y_move = 0;
+        //     }
+        // }
 
-        object_green.move( y_move, x_move );
+        head.move( y_move, x_move );
 
         background.draw( screen );
-        object_green.draw( screen );
+        head.draw( screen );
 		SDL_UpdateWindowSurface( window );
 
     }
