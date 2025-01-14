@@ -34,12 +34,24 @@ int main(){
     Uint32 gray = SDL_MapRGB( screen->format, 100, 100, 100);
 	Uint32 grass = SDL_MapRGB( screen-> format, 50, 50, 100);
     Uint32 green = SDL_MapRGB( screen->format, 50, 255, 50);
+    Uint32 red = SDL_MapRGB( screen->format, 255, 50, 50);
+    Uint32 blue = SDL_MapRGB( screen->format, 50, 50, 255);
     // colors
 
     // gray background
     SDL_FillRect( screen, NULL, gray);
 
-    Sprite head( green, 0, 0);
+    // SPRITES
+    Sprite head( green, 5, 5);
+    Sprite tail( green, 5, 4);
+    Sprite grzechotka( red, 5, 3);
+    Sprite grzechotka2( blue, 5, 3);
+
+    // SNAKE
+    Snake Snake( &head );
+    Snake.enqueue( &tail );
+    Snake.enqueue( &grzechotka);
+    Snake.enqueue( &grzechotka2 );
 
 	// tlo, po ktorym porusza sie waz
     Background background( grass, EDGE, EDGE, SCREEN_WIDTH - ( 2 * EDGE ), SCREEN_HEIGHT - (2 * EDGE ) );
@@ -64,14 +76,16 @@ int main(){
 
 		cap_framerate(starting_tick);
 		Uint32 current_time = SDL_GetTicks() - starting_tick;
-		printf("frame time: %d ms (should be: %d ms) \n", current_time, 1000/FPS);
+		//printf("frame time: %d ms (should be: %d ms) \n", current_time, 1000/FPS);
 
         handleCorners(head, &x_move, &y_move);
 
+        Snake.move( );
         head.move( y_move, x_move );
 
         background.draw( screen );
         head.draw( screen );
+        Snake.drawAll( screen );
 		SDL_UpdateWindowSurface( window );
 
     }

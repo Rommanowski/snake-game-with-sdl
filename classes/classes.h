@@ -17,10 +17,13 @@ class Sprite{
     public:
 
         int x_pos, y_pos;
+        Sprite *next;
 
         Sprite( Uint32 color, int x, int y, int w = PLAYER_SIZE, int h = PLAYER_SIZE );
 
         void move(int y_move, int x_move);
+
+        void setPosition( );
         
         void draw( SDL_Surface *destination);
 
@@ -44,8 +47,15 @@ class Snake{
         // constructor
         Snake(Sprite *origin);
 
-        Sprite *current;
-        Sprite *next;
+        Sprite *origin;
+        Sprite *last;
+
+        int getSize( );
+        Sprite *getLast( );
+        void enqueue( Sprite *to_add );
+        void dequeue( );
+        void move( );
+        void drawAll( SDL_Surface* destination );
 };
 
 
