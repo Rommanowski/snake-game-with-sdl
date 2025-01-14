@@ -43,7 +43,7 @@ int main(){
 
     // SPRITES
     Sprite head( green, 5, 5);
-    Sprite tail( green, 5, 4);
+    Sprite tail( gray, 5, 4);
     Sprite grzechotka( red, 5, 3);
     Sprite grzechotka2( blue, 5, 3);
 
@@ -81,10 +81,11 @@ int main(){
         handleCorners(head, &x_move, &y_move);
 
         Snake.move( );
+        Snake.getSize( );
         head.move( y_move, x_move );
 
         background.draw( screen );
-        head.draw( screen );
+        //head.draw( screen );
         Snake.drawAll( screen );
 		SDL_UpdateWindowSurface( window );
 

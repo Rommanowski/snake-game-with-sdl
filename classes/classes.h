@@ -18,6 +18,7 @@ class Sprite{
 
         int x_pos, y_pos;
         Sprite *next;
+        Sprite *prev;
 
         Sprite( Uint32 color, int x, int y, int w = PLAYER_SIZE, int h = PLAYER_SIZE );
 
@@ -56,6 +57,7 @@ class Snake{
         void dequeue( );
         void move( );
         void drawAll( SDL_Surface* destination );
+        void lengthen( );
 };
 
 
