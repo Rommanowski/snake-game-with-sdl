@@ -121,6 +121,13 @@ int main(){
                 printf("KOLIZJA\n");
         }
 
+        if( Snake.last_speed_update + SPEED_UPDATE_INTERVAL <= starting_tick ){
+
+            Snake.last_speed_update = starting_tick;
+            Snake.speedUp( );
+
+        }
+
         }
 
 
@@ -129,7 +136,8 @@ int main(){
         //head.draw( screen );
         Snake.drawAll( screen );
 
-        sprintf(game_info, " Pts: %d     time: %.2f ", 2137, float(starting_tick) / 1000);
+        sprintf(game_info, " Pts: %d     time: %.2f     snake speed: %.2f ",
+                2137, float( starting_tick)  / 1000, float( 1000 ) / Snake.move_interval );
         DrawString( screen, CENTER_TEXT(game_info), 50, game_info, charset );
 
 		SDL_UpdateWindowSurface( window );

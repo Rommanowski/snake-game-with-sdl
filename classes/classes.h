@@ -54,6 +54,7 @@ class Snake{
 
         int move_interval;
         int last_move;
+        int last_speed_update;
 
         int getSize( );
         Sprite *getLast( );
@@ -63,6 +64,7 @@ class Snake{
         void drawAll( SDL_Surface* destination );
         void lengthen( Uint32 color );
         bool collision( );
+        void speedUp( );
 };
 
 

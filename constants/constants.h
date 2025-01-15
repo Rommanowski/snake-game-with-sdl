@@ -21,6 +21,8 @@
     ((SCREEN_WIDTH - strlen(text) * LETTER_SIZE) / 2)
 
 #define FPS 100
+#define SPEED_UPDATE_INTERVAL (2 * 1000)
+#define MIN_MOVE_INTERVAL 50
 
 // kierunki, w których zwrócona jest głowa węża. Wartości nie mają większego znaczenia, chodzi o rozróżnienie ich
 #define UP -1

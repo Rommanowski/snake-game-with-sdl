@@ -64,6 +64,7 @@ Snake::Snake( Sprite *origin_node){
 
     move_interval = 250;
     last_move = 0;
+    last_speed_update = 0;
 }
 
 int Snake::getSize( ){
@@ -148,4 +149,17 @@ bool Snake::collision( ){
         node = node->next;
     }
     return false;
+}
+
+void Snake::speedUp( ){
+    
+    int new_interval = move_interval / 1.2;
+    
+    if( new_interval < MIN_MOVE_INTERVAL ){
+        move_interval = MIN_MOVE_INTERVAL;
+        return;
+    }
+
+    move_interval = new_interval;
+
 }
