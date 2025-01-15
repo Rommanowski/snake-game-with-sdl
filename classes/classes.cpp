@@ -42,7 +42,7 @@ bool Sprite::operator==(const Sprite& other) const {
 }
 
 // Implementation for Background
-Background::Background(Uint32 color, int x, int y, int w, int h)
+Background::Background(Uint32 color=0, int x=0, int y=0, int w=PLAYER_SIZE, int h=PLAYER_SIZE)
     : Sprite(color, x, y, w, h) {
     image = SDL_CreateRGBSurface(0, w, h, 32, 0, 0, 0, 0);
     SDL_FillRect(image, NULL, color);
@@ -125,6 +125,10 @@ void Snake::drawAll( SDL_Surface* destination ){
     }
 }
 
-// void Snake::lengthen( ){
-//     Sprite temp = Sprite(  )
-// }
+void Snake::lengthen( Uint32 color){
+    Sprite *temp = new Sprite( color );
+    Sprite *tail = last;
+    temp->x_pos = tail->x_pos;
+    temp->y_pos = tail->y_pos;
+    enqueue( temp );
+}

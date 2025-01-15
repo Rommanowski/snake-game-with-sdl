@@ -43,15 +43,16 @@ int main(){
 
     // SPRITES
     Sprite head( green, 5, 5);
-    Sprite tail( gray, 5, 4);
-    Sprite grzechotka( red, 5, 3);
-    Sprite grzechotka2( blue, 5, 3);
 
     // SNAKE
     Snake Snake( &head );
-    Snake.enqueue( &tail );
-    Snake.enqueue( &grzechotka);
-    Snake.enqueue( &grzechotka2 );
+
+    for(int i=0; i<15; ++i){
+    Snake.lengthen( red );
+    Snake.lengthen( blue );
+    Snake.lengthen( gray );
+    Snake.lengthen( green );
+    }
 
 	// tlo, po ktorym porusza sie waz
     Background background( grass, EDGE, EDGE, SCREEN_WIDTH - ( 2 * EDGE ), SCREEN_HEIGHT - (2 * EDGE ) );
@@ -71,7 +72,16 @@ int main(){
 
         while( SDL_PollEvent(&event))
         {
-            handleKeys( &x_move, &y_move, &running, event);
+            if(event.key.keysym.sym == SDLK_n)
+            {
+                SDL_Delay(1000);
+                SDL_DestroyWindow( window );
+                SDL_Quit();
+                main();
+                continue;
+            }
+            else
+                handleKeys( &x_move, &y_move, &running, event);
         }
 
 		cap_framerate(starting_tick);
@@ -81,7 +91,6 @@ int main(){
         handleCorners(head, &x_move, &y_move);
 
         Snake.move( );
-        Snake.getSize( );
         head.move( y_move, x_move );
 
         background.draw( screen );
