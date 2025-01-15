@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <iostream>
+#include <string.h>
 
 extern "C" {
 #include "./SDL2-2.0.10/include/SDL.h"
@@ -20,7 +21,7 @@ int main(){
                                 SDL_WINDOWPOS_UNDEFINED,
                                 SDL_WINDOWPOS_UNDEFINED,
                                 SCREEN_WIDTH,
-                                SCREEN_HEIGHT,
+                                SCREEN_HEIGHT + INFO_HEIGHT,
                                 0 );
     if(window == nullptr)
     {
@@ -30,12 +31,24 @@ int main(){
 
     SDL_Surface *screen = SDL_GetWindowSurface( window );
 
+    char information[1000];
+    SDL_Surface *charset = NULL;
+    charset = SDL_LoadBMP( "bitmaps/cs8x8.bmp" );
+    if( charset == NULL ){
+        printf("Error with loading the cs8x8.bmp charset!\n");
+        SDL_FreeSurface( screen );
+        SDL_FreeSurface( charset );
+        SDL_Quit();
+        return 1;
+    }
+
 	// colors
     Uint32 gray = SDL_MapRGB( screen->format, 100, 100, 100);
 	Uint32 grass = SDL_MapRGB( screen-> format, 50, 50, 100);
     Uint32 green = SDL_MapRGB( screen->format, 50, 255, 50);
     Uint32 red = SDL_MapRGB( screen->format, 255, 50, 50);
     Uint32 blue = SDL_MapRGB( screen->format, 50, 50, 255);
+    Uint32 brown = SDL_MapRGB( screen->format, 150, 75, 0);
     // colors
 
     // gray background
@@ -55,8 +68,11 @@ int main(){
     }
 
 	// tlo, po ktorym porusza sie waz
-    Background background( grass, EDGE, EDGE, SCREEN_WIDTH - ( 2 * EDGE ), SCREEN_HEIGHT - (2 * EDGE ) );
+    Background background( grass, EDGE, 2 * EDGE + INFO_HEIGHT, SCREEN_WIDTH - ( 2 * EDGE ), SCREEN_HEIGHT - ( 3 * EDGE ) );
     background.draw( screen );
+
+    Background info( brown, EDGE, EDGE, SCREEN_WIDTH - ( 2 * EDGE ), INFO_HEIGHT);
+    info.draw( screen );
 
     SDL_UpdateWindowSurface( window );
 
@@ -81,21 +97,30 @@ int main(){
                 continue;
             }
             else
-                handleKeys( &x_move, &y_move, &running, event);
+                handleKeys( &x_move, &y_move, &running, event, &head );
         }
 
 		cap_framerate(starting_tick);
 		Uint32 current_time = SDL_GetTicks() - starting_tick;
 		//printf("frame time: %d ms (should be: %d ms) \n", current_time, 1000/FPS);
 
-        handleCorners(head, &x_move, &y_move);
+        handleCorners( &head, &x_move, &y_move );
 
         Snake.move( );
         head.move( y_move, x_move );
+        if(Snake.collision()){
+            SDL_Delay(1000);
+            printf("KOLIZJA\n");
+        }
+            
 
         background.draw( screen );
         //head.draw( screen );
         Snake.drawAll( screen );
+
+        sprintf(information, "TO JEST TESTOWY TEKST TO WYPISANIA W OKNIE");
+        DrawString( screen, CENTER_TEXT(information), 30, information, charset );
+
 		SDL_UpdateWindowSurface( window );
 
     }

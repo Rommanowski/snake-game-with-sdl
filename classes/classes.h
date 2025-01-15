@@ -15,7 +15,7 @@ class Sprite{
         int origin_x, origin_y;
 
     public:
-
+        int direction;  // up, down, right, left
         int x_pos, y_pos;
         Sprite *next;
         Sprite *prev;
@@ -58,6 +58,7 @@ class Snake{
         void move( );
         void drawAll( SDL_Surface* destination );
         void lengthen( Uint32 color );
+        bool collision( );
 };
 
 

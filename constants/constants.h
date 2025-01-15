@@ -7,13 +7,25 @@
 // Stałe dla programu
 #define PLAYER_SIZE 25      // jeden kwadrat, z ktorego sklada sie waz ma wymiary 25x25 pikseli
 
-#define Y_BORDER 32         // wymiary mapy, liczone w kwadratach
+#define Y_BORDER 25         // wymiary mapy, liczone w kwadratach
 #define X_BORDER 25
 
 #define SCREEN_WIDTH ( ( X_BORDER * PLAYER_SIZE ) + ( 2 * EDGE ))	//670
-#define SCREEN_HEIGHT ( ( Y_BORDER * PLAYER_SIZE) + ( 2 * EDGE ))	//920
+#define SCREEN_HEIGHT ( ( Y_BORDER * PLAYER_SIZE) + ( 3 * EDGE ))	//920
+#define INFO_HEIGHT 100        // jak duży jest panel z informacjami na dole
 
 #define EDGE 10
+#define LETTER_SIZE 8
+
+#define CENTER_TEXT(text) \
+    ((SCREEN_WIDTH - strlen(text) * LETTER_SIZE) / 2)
+
 #define FPS 10
+
+// kierunki, w których zwrócona jest głowa węża. Wartości nie mają większego znaczenia, chodzi o rozróżnienie ich
+#define UP 1
+#define RIGHT 2
+#define DOWN 3
+#define LEFT 4
 
 #endif // CONSTANTS_H

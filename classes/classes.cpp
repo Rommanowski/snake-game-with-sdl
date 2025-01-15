@@ -9,11 +9,12 @@ Sprite::Sprite(Uint32 color, int x, int y, int w, int h) {
     SDL_FillRect(image, NULL, color);
     rect = image->clip_rect;
     rect.x = x * PLAYER_SIZE + EDGE;
-    rect.y = y * PLAYER_SIZE + EDGE;
+    rect.y = y * PLAYER_SIZE + ( 2 * EDGE ) + INFO_HEIGHT;
     x_pos = x;
     y_pos = y;
     next = nullptr;
     prev = nullptr;
+    direction = RIGHT;
 }
 
 
@@ -26,7 +27,7 @@ void Sprite::move(int y_move, int x_move) {
 
 void Sprite::setPosition( ){
     rect.x = x_pos * PLAYER_SIZE + EDGE;
-    rect.y = y_pos * PLAYER_SIZE + EDGE;
+    rect.y = y_pos * PLAYER_SIZE + ( 2 * EDGE ) + INFO_HEIGHT;
 }
 
 void Sprite::draw(SDL_Surface* destination) {
@@ -131,4 +132,15 @@ void Snake::lengthen( Uint32 color){
     temp->x_pos = tail->x_pos;
     temp->y_pos = tail->y_pos;
     enqueue( temp );
+}
+
+bool Snake::collision( ){
+    Sprite *node = origin->next;
+
+    while( node != nullptr ){
+        if( ( node->x_pos == origin->x_pos) && ( node->y_pos == origin->y_pos ))
+            return true;
+        node = node->next;
+    }
+    return false;
 }
