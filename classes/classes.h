@@ -56,6 +56,8 @@ class Snake{
         int last_move;
         int last_speed_update;
 
+        int score;
+
         int getSize( );
         Sprite *getLast( );
         void enqueue( Sprite *to_add );
@@ -65,7 +67,14 @@ class Snake{
         void lengthen( Uint32 color );
         bool collision( );
         void speedUp( );
+        bool isSnake( int x_pos, int y_pos );
 };
 
+class Apple : public Sprite{
+
+    public:
+        Apple( Uint32 color, int x, int y, int w, int h);
+        void findPosition( Snake *Snake );
+};
 
 #endif

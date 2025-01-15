@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <iostream>
 #include <string.h>
+#include <cstdlib> 
+#include <ctime>
 
 extern "C" {
 #include "./SDL2-2.0.10/include/SDL.h"
@@ -14,6 +16,7 @@ extern "C" {
 using namespace std;
 
 int main(){
+    srand(time(NULL));
     SDL_Init( SDL_INIT_EVERYTHING);
     // init the window
     SDL_Window *window = NULL;
@@ -56,16 +59,16 @@ int main(){
     SDL_FillRect( screen, NULL, gray);
 
     // SPRITES
-    Sprite head( green, 5, 5);
+    Sprite head( green, 3, 3);
 
     // SNAKE
     Snake Snake( &head );
 
-    for(int i=0; i<15; ++i){
-    Snake.lengthen( red );
-    Snake.lengthen( blue );
-    Snake.lengthen( gray );
-    Snake.lengthen( green );
+    //APPLE
+    Apple apple( red, 2, 2, PLAYER_SIZE, PLAYER_SIZE);
+
+    for(int i=0; i<2; ++i){
+        Snake.lengthen( green );
     }
 
 	// tlo, po ktorym porusza sie waz
@@ -85,6 +88,8 @@ int main(){
     int iter = 0;
 
     int x_move = 1, y_move = 0;
+
+    apple.findPosition( &Snake );
 
     while(running)
     {
@@ -128,13 +133,18 @@ int main(){
 
         }
 
+        if( ( head.x_pos == apple.x_pos ) && ( head.y_pos == apple.y_pos ) ){
+            apple.findPosition( &Snake );
+            Snake.lengthen( green );
+            Snake.score++;
         }
 
-
-            
+    }
+     
         background.draw( screen );
         //head.draw( screen );
         Snake.drawAll( screen );
+        apple.draw( screen );
 
         sprintf(game_info, " Pts: %d     time: %.2f     snake speed: %.2f ",
                 2137, float( starting_tick)  / 1000, float( 1000 ) / Snake.move_interval );

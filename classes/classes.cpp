@@ -62,7 +62,9 @@ Snake::Snake( Sprite *origin_node){
     origin = origin_node;
     last = origin_node;
 
-    move_interval = 250;
+    score = 0;
+
+    move_interval = 350;
     last_move = 0;
     last_speed_update = 0;
 }
@@ -133,8 +135,8 @@ void Snake::drawAll( SDL_Surface* destination ){
 }
 
 void Snake::lengthen( Uint32 color){
-    Sprite *temp = new Sprite( color );
     Sprite *tail = last;
+    Sprite *temp = new Sprite( color, last->x_pos, last->y_pos );
     temp->x_pos = tail->x_pos;
     temp->y_pos = tail->y_pos;
     enqueue( temp );
@@ -162,4 +164,56 @@ void Snake::speedUp( ){
 
     move_interval = new_interval;
 
+}
+
+bool Snake::isSnake( int y_pos, int x_pos ){
+    Sprite *current = origin;
+
+    while( current != nullptr){
+        if( ( current->x_pos == x_pos) && ( current->y_pos == y_pos) )
+            return 1;
+        
+        current = current->next;
+    }
+    return 0;
+}
+
+Apple::Apple( Uint32 color, int x, int y, int w, int h)
+    : Sprite( color, x, y, w, h ){
+    image = SDL_CreateRGBSurface(0, w, h, 32, 0, 0, 0, 0);
+    SDL_FillRect(image, NULL, color);
+    rect = image->clip_rect;
+    rect.x = x;
+    rect.y = y;
+}
+void Apple::findPosition( Snake *snake ){
+
+    int available_cords_x[X_BORDER * Y_BORDER];
+    int available_cords_y[X_BORDER * Y_BORDER];
+    int index=0;
+
+    // szukamy wspolrzednych, na ktorych nie ma weza
+    for( int i=0; i<Y_BORDER; ++i )     // i is for Y coordinates
+    {
+        for( int j=0; j < X_BORDER; ++j )   //j is for X
+        {
+            if( !snake->isSnake( i, j ) ){
+                available_cords_y[index] = i;
+                available_cords_x[index] = j;
+                index++;
+                //printf("index: %d   x: %d   y: %d \n", index, available_cords_x[index-1], available_cords_y[index-1]);
+            }
+        }
+    }
+
+    // teraz losujemy jedna z dostepnych wspolrzednych
+    int random_free_index = RANDOM(1, index) -1;
+
+    x_pos = available_cords_x[random_free_index];
+    y_pos = available_cords_y[random_free_index];
+
+    setPosition( );
+
+    printf("selection:  x: %d    y: %d      at index: %d \n", x_pos, y_pos, random_free_index);
+    printf("----------------------NEXT-------------------\n");
 }
