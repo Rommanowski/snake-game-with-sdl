@@ -80,30 +80,38 @@ int handleKeys( int *x_move, int *y_move, bool *running, SDL_Event event, Sprite
     if( event.type == SDL_KEYDOWN ){
 
         switch(event.key.keysym.sym){
+            // down
             case SDLK_s:
                 if( head->direction == UP ) break;
                 if( head->y_pos == Y_BORDER - 1 ) break;           // the second if statement is to prevent snake running into itself on borders
+                if( head->last_move_direction == UP ) break;
                 *y_move = 1;
                 *x_move = 0;
                 head->direction = DOWN;
                 break;
+            // up
             case SDLK_w:
                 if( head->direction == DOWN ) break;
                 if( head->y_pos == 0 ) break;
+                if( head->last_move_direction == DOWN ) break;
                 *y_move = -1;
                 *x_move = 0;
                 head->direction = UP;
                 break;
+            // left
             case SDLK_a:
                 if( head->direction == RIGHT ) break;
                 if( head->x_pos == 0 ) break;
+                if( head->last_move_direction == RIGHT ) break;
                 *y_move = 0;
                 *x_move = -1;
                 head->direction = LEFT;
                 break;
+            // right
             case SDLK_d:
                 if( head->direction == LEFT ) break;
                 if( head->x_pos == X_BORDER - 1 ) break;
+                if( head->last_move_direction == LEFT ) break;
                 *y_move = 0;
                 *x_move = 1;
                 head->direction = RIGHT;

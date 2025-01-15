@@ -17,6 +17,7 @@ class Sprite{
     public:
         int direction;  // up, down, right, left
         int x_pos, y_pos;
+        int last_move_direction;
         Sprite *next;
         Sprite *prev;
 

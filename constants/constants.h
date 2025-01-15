@@ -23,9 +23,9 @@
 #define FPS 100
 
 // kierunki, w których zwrócona jest głowa węża. Wartości nie mają większego znaczenia, chodzi o rozróżnienie ich
-#define UP 1
+#define UP -1
 #define RIGHT 2
-#define DOWN 3
-#define LEFT 4
+#define DOWN 1
+#define LEFT -2
 
 #endif // CONSTANTS_H

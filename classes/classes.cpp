@@ -15,6 +15,7 @@ Sprite::Sprite(Uint32 color, int x, int y, int w, int h) {
     next = nullptr;
     prev = nullptr;
     direction = RIGHT;
+    last_move_direction = RIGHT;
 }
 
 
@@ -23,6 +24,7 @@ void Sprite::move(int y_move, int x_move) {
     rect.y += y_move * PLAYER_SIZE;
     x_pos += x_move;
     y_pos += y_move;
+    last_move_direction = direction;
 }
 
 void Sprite::setPosition( ){
