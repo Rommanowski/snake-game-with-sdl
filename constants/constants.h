@@ -20,7 +20,7 @@
 #define CENTER_TEXT(text) \
     ((SCREEN_WIDTH - strlen(text) * LETTER_SIZE) / 2)
 
-#define FPS 10
+#define FPS 100
 
 // kierunki, w których zwrócona jest głowa węża. Wartości nie mają większego znaczenia, chodzi o rozróżnienie ich
 #define UP 1

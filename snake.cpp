@@ -31,7 +31,8 @@ int main(){
 
     SDL_Surface *screen = SDL_GetWindowSurface( window );
 
-    char information[1000];
+    char personal_info[1000];
+    char game_info[1000];
     SDL_Surface *charset = NULL;
     charset = SDL_LoadBMP( "bitmaps/cs8x8.bmp" );
     if( charset == NULL ){
@@ -74,6 +75,9 @@ int main(){
     Background info( brown, EDGE, EDGE, SCREEN_WIDTH - ( 2 * EDGE ), INFO_HEIGHT);
     info.draw( screen );
 
+    sprintf(personal_info, " SNAKE GAME by --Jakub Romanowski s203681-- 2025 ");
+    DrawString( screen, CENTER_TEXT(personal_info), 30, personal_info, charset );
+
     SDL_UpdateWindowSurface( window );
 
     SDL_Event event;
@@ -106,20 +110,27 @@ int main(){
 
         handleCorners( &head, &x_move, &y_move );
 
-        Snake.move( );
-        head.move( y_move, x_move );
-        if(Snake.collision()){
-            SDL_Delay(1000);
-            printf("KOLIZJA\n");
-        }
-            
+        if( Snake.last_move + Snake.move_interval <= starting_tick ){
 
+            Snake.move( );
+            head.move( y_move, x_move );
+            Snake.last_move = starting_tick;
+
+            if(Snake.collision()){
+                SDL_Delay(1000);
+                printf("KOLIZJA\n");
+        }
+
+        }
+
+
+            
         background.draw( screen );
         //head.draw( screen );
         Snake.drawAll( screen );
 
-        sprintf(information, "TO JEST TESTOWY TEKST TO WYPISANIA W OKNIE");
-        DrawString( screen, CENTER_TEXT(information), 30, information, charset );
+        sprintf(game_info, " Pts: %d     time: %.2f ", 2137, float(starting_tick) / 1000);
+        DrawString( screen, CENTER_TEXT(game_info), 50, game_info, charset );
 
 		SDL_UpdateWindowSurface( window );
 

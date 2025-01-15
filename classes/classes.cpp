@@ -59,6 +59,9 @@ Snake::Snake( Sprite *origin_node){
 
     origin = origin_node;
     last = origin_node;
+
+    move_interval = 250;
+    last_move = 0;
 }
 
 int Snake::getSize( ){

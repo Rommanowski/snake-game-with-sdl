@@ -51,6 +51,9 @@ class Snake{
         Sprite *origin;
         Sprite *last;
 
+        int move_interval;
+        int last_move;
+
         int getSize( );
         Sprite *getLast( );
         void enqueue( Sprite *to_add );
