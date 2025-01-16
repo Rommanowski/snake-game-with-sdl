@@ -2,6 +2,7 @@
 #include "../constants/constants.h"
 #include "../classes/classes.h"
 #include <stdio.h>
+#include <string.h>
 
 void cap_framerate( Uint32 starting_tick)
 {
@@ -69,10 +70,9 @@ void handleCorners( Sprite *head, int *x_move, int *y_move )
     }
 }
 
-int handleKeys( int *x_move, int *y_move, bool *running, SDL_Event event, Sprite *head ){
+int handleKeys( int *x_move, int *y_move, SDL_Event event, Sprite *head ){
 
     if( ( event.type == SDL_QUIT ) || ( event.key.keysym.sym == SDLK_ESCAPE )){
-        *running = 0;
         printf("ESCAPE! \n");
         return 1;
     }
@@ -147,4 +147,47 @@ void DrawString(SDL_Surface *screen, int x, int y, const char *text, SDL_Surface
 		}
 	}
 
+int gameOver( Sprite *head, Uint32 color, SDL_Surface *screen, SDL_Surface *charset, SDL_Window *window, Snake *snake, SDL_Event event ){
+
+    head = new Sprite( color, head->x_pos, head->y_pos);
+    head->draw( screen );
+    SDL_UpdateWindowSurface( window );
+    SDL_Delay( 750 );
+    printf("KOLIZJA\n");
+
+    char text1[1000], text2[1000], text3[1000], text4[1000];
+    sprintf(text1, "                            ");
+    sprintf(text2, "    GAME OVER! SCORE: %d    ", snake->score);
+    sprintf(text3, " 'n' - new game, ESC - quit ");
+    sprintf(text4, "                            ");
+    DrawString( screen, CENTER_TEXT(text1), SCREEN_HEIGHT/2 - 16, text1, charset );
+    DrawString( screen, CENTER_TEXT(text2), SCREEN_HEIGHT/2 - 8, text2, charset );
+    DrawString( screen, CENTER_TEXT(text3), SCREEN_HEIGHT/2 - 0, text3, charset );
+    DrawString( screen, CENTER_TEXT(text4), SCREEN_HEIGHT/2 + 8, text4, charset );
+
+    SDL_UpdateWindowSurface( window );
+    SDL_Delay( 1000 );
+
+    while( true )
+    {
+        while (SDL_PollEvent( &event ) ){
+            if( event.key.keysym.sym == SDLK_n)
+            {
+                // SDL_Delay(1000);
+                // SDL_DestroyWindow( window );
+                // SDL_Quit();
+                // main();
+                // continue;
+                return 0;
+            }
+            else if( event.key.keysym.sym == SDLK_ESCAPE || event.type == SDL_QUIT )
+            {
+                // SDL_Delay(1000);
+                // SDL_DestroyWindow( window );
+                // SDL_Quit();
+                return 1;
+            }
+        }
+    }
+}
 
