@@ -67,7 +67,7 @@ int main(){
     //APPLE
     Apple apple( red, 2, 2, PLAYER_SIZE, PLAYER_SIZE);
 
-    for(int i=0; i<2; ++i){
+    for(int i=0; i<8; ++i){
         snake->lengthen( green );
     }
 
@@ -122,8 +122,45 @@ int main(){
             snake->last_move = starting_tick;
 
             if(snake->collision()){
-                SDL_Delay(1000);
+                head = new Sprite( red, head->x_pos, head->y_pos);
+                head->draw( screen );
+                SDL_UpdateWindowSurface( window );
+                SDL_Delay( 750 );
                 printf("KOLIZJA\n");
+
+                char text1[1000], text2[1000], text3[1000], text4[1000];
+                sprintf(text1, "                            ");
+                sprintf(text2, "    GAME OVER! SCORE: %d    ", snake->score);
+                sprintf(text3, " 'n' - new game, ESC - quit ");
+                sprintf(text4, "                            ");
+                DrawString( screen, CENTER_TEXT(text1), SCREEN_HEIGHT/2 - 16, text1, charset );
+                DrawString( screen, CENTER_TEXT(text2), SCREEN_HEIGHT/2 - 8, text2, charset );
+                DrawString( screen, CENTER_TEXT(text3), SCREEN_HEIGHT/2 - 0, text3, charset );
+                DrawString( screen, CENTER_TEXT(text4), SCREEN_HEIGHT/2 + 8, text4, charset );
+
+                SDL_UpdateWindowSurface( window );
+                SDL_Delay( 1000 );
+
+                while( true )
+                {
+                    while (SDL_PollEvent( &event ) ){
+                        if( event.key.keysym.sym == SDLK_n)
+                        {
+                            SDL_Delay(1000);
+                            SDL_DestroyWindow( window );
+                            SDL_Quit();
+                            main();
+                            continue;
+                        }
+                        else if( event.key.keysym.sym == SDLK_ESCAPE || event.type == SDL_QUIT )
+                        {
+                            SDL_Delay(1000);
+                            SDL_DestroyWindow( window );
+                            SDL_Quit();
+                            return 0;
+                        }
+                    }
+                }
         }
 
         if( snake->last_speed_update + SPEED_UPDATE_INTERVAL <= starting_tick ){
