@@ -59,16 +59,16 @@ int main(){
     SDL_FillRect( screen, NULL, gray);
 
     // SPRITES
-    Sprite head( green, 3, 3);
+    Sprite *head = new Sprite( green, 3, 3);
 
     // SNAKE
-    Snake Snake( &head );
+    Snake *snake = new Snake( head );
 
     //APPLE
     Apple apple( red, 2, 2, PLAYER_SIZE, PLAYER_SIZE);
 
     for(int i=0; i<2; ++i){
-        Snake.lengthen( green );
+        snake->lengthen( green );
     }
 
 	// tlo, po ktorym porusza sie waz
@@ -89,7 +89,7 @@ int main(){
 
     int x_move = 1, y_move = 0;
 
-    apple.findPosition( &Snake );
+    apple.findPosition( snake );
 
     while(running)
     {
@@ -106,48 +106,48 @@ int main(){
                 continue;
             }
             else
-                handleKeys( &x_move, &y_move, &running, event, &head );
+                handleKeys( &x_move, &y_move, &running, event, head );
         }
 
 		cap_framerate(starting_tick);
 		Uint32 current_time = SDL_GetTicks() - starting_tick;
 		//printf("frame time: %d ms (should be: %d ms) \n", current_time, 1000/FPS);
 
-        handleCorners( &head, &x_move, &y_move );
+        handleCorners( head, &x_move, &y_move );
 
-        if( Snake.last_move + Snake.move_interval <= starting_tick ){
+        if( snake->last_move + snake->move_interval <= starting_tick ){
 
-            Snake.move( );
-            head.move( y_move, x_move );
-            Snake.last_move = starting_tick;
+            snake->move( );
+            head->move( y_move, x_move );
+            snake->last_move = starting_tick;
 
-            if(Snake.collision()){
+            if(snake->collision()){
                 SDL_Delay(1000);
                 printf("KOLIZJA\n");
         }
 
-        if( Snake.last_speed_update + SPEED_UPDATE_INTERVAL <= starting_tick ){
+        if( snake->last_speed_update + SPEED_UPDATE_INTERVAL <= starting_tick ){
 
-            Snake.last_speed_update = starting_tick;
-            Snake.speedUp( );
+            snake->last_speed_update = starting_tick;
+            snake->speedUp( );
 
         }
 
-        if( ( head.x_pos == apple.x_pos ) && ( head.y_pos == apple.y_pos ) ){
-            apple.findPosition( &Snake );
-            Snake.lengthen( green );
-            Snake.score++;
+        if( ( head->x_pos == apple.x_pos ) && ( head->y_pos == apple.y_pos ) ){
+            apple.findPosition( snake );
+            snake->lengthen( green );
+            snake->score++;
         }
 
     }
      
         background.draw( screen );
-        //head.draw( screen );
-        Snake.drawAll( screen );
+        //head->draw( screen );
+        snake->drawAll( screen );
         apple.draw( screen );
 
         sprintf(game_info, " Pts: %d     time: %.2f     snake speed: %.2f ",
-                2137, float( starting_tick)  / 1000, float( 1000 ) / Snake.move_interval );
+                snake->score, float( starting_tick)  / 1000, float( 1000 ) / snake->move_interval );
         DrawString( screen, CENTER_TEXT(game_info), 50, game_info, charset );
 
 		SDL_UpdateWindowSurface( window );
