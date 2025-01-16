@@ -94,25 +94,14 @@ int main(){
 
     while( true )
     {
-		Uint32 starting_tick = SDL_GetTicks();
+		Uint32 starting_tick = SDL_GetTicks() - timer_offset;
         bool restart = 0;
 
         while( SDL_PollEvent(&event))
         {
             if(event.key.keysym.sym == SDLK_n)
             {
-                // snake->removeTail( );
-                // head->x_pos = 4;
-                // head->y_pos = 4;
-                // x_move = 1;
-                // y_move = 0;
-                // head->setPosition( );
-                // snake = new Snake( head );
-                // snake->lengthen( green );
-                // snake->lengthen( green );
-                // apple.findPosition( snake );
-                // restart = true;
-                restartGame( &snake, head, apple, &x_move, &y_move, &restart, green );
+                restartGame( &snake, head, apple, &x_move, &y_move, &restart, green, &timer_offset);
                 continue;
             }
             else if( handleKeys( &x_move, &y_move, event, head ) ){
@@ -127,8 +116,6 @@ int main(){
             continue;
         }
 
-		cap_framerate(starting_tick);
-		Uint32 current_time = SDL_GetTicks() - starting_tick;
 		//printf("frame time: %d ms (should be: %d ms) \n", current_time, 1000/FPS);
 
         handleCorners( head, &x_move, &y_move );
@@ -141,7 +128,7 @@ int main(){
 
             if(snake->collision()){
                 if( !gameOver( head, red, screen, charset, window, snake, event ) ){
-                    restartGame( &snake, head, apple, &x_move, &y_move, &restart, green );
+                    restartGame( &snake, head, apple, &x_move, &y_move, &restart, green, &timer_offset );   
                     continue;
                 }
                 else{
@@ -149,28 +136,25 @@ int main(){
                     SDL_Quit();
                     return 0;
                 }
-
             }
 
             if( snake->last_speed_update + SPEED_UPDATE_INTERVAL <= starting_tick ){
 
                 snake->last_speed_update = starting_tick;
                 snake->speedUp( );
-
             }
 
             if( ( head->x_pos == apple.x_pos ) && ( head->y_pos == apple.y_pos ) ){
+
                 apple.findPosition( snake );
                 snake->lengthen( green );
                 //snake->removeTail( );
                 printf("SNAKE SIZE:[%d]\n", snake->getSize());
                 snake->score++;
             }
-
         }
      
         background.draw( screen );
-        //head->draw( screen );
         snake->drawAll( screen );
         apple.draw( screen );
 
@@ -179,6 +163,10 @@ int main(){
         DrawString( screen, CENTER_TEXT(game_info), 50, game_info, charset );
 
 		SDL_UpdateWindowSurface( window );
+
+		cap_framerate(starting_tick, timer_offset);
+		// Uint32 current_time = SDL_GetTicks() - starting_tick - timer_offset;
+        // printf("Frame Time: %d ms (Target: %d ms)\n" ,current_time, 1000/FPS );
 
     }
  

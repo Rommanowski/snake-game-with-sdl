@@ -4,11 +4,11 @@
 #include <stdio.h>
 #include <string.h>
 
-void cap_framerate( Uint32 starting_tick)
+void cap_framerate( Uint32 starting_tick, int offset )
 {
-    if( ( 1000/FPS) > ( SDL_GetTicks() - starting_tick ) )
+    if( ( 1000/FPS) > ( SDL_GetTicks() - starting_tick - offset ) )
         {
-            SDL_Delay( 1000/FPS - (SDL_GetTicks() - starting_tick) );
+            SDL_Delay( 1000/FPS - (SDL_GetTicks() - starting_tick - offset ) );
         }
 }
 
@@ -87,6 +87,7 @@ int handleKeys( int *x_move, int *y_move, SDL_Event event, Sprite *head ){
                 if( head->last_move_direction == UP ) break;
                 *y_move = 1;
                 *x_move = 0;
+                printf("ZMIENIONO KIERUNEK NA DOWN\n");
                 head->direction = DOWN;
                 break;
             // up
@@ -185,7 +186,7 @@ int gameOver( Sprite *head, Uint32 color, SDL_Surface *screen, SDL_Surface *char
 }
 
 void restartGame( Snake **snake, Sprite *head, Apple apple, int *x_move,
-                  int *y_move, bool *restart, Uint32 green ){
+                  int *y_move, bool *restart, Uint32 green, int *timer_offset ){
 
     (*snake)->removeTail( );
     head->x_pos = 4;
@@ -194,9 +195,11 @@ void restartGame( Snake **snake, Sprite *head, Apple apple, int *x_move,
     *y_move = 0;
     head->setPosition( );
     head->last_move_direction = RIGHT;
+    head->direction = RIGHT;
     *snake = new Snake( head );
     (*snake)->lengthen( green );
     (*snake)->lengthen( green );
     apple.findPosition( (*snake) );
     *restart = true;
+    *timer_offset = SDL_GetTicks( );
 }

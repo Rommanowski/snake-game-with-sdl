@@ -62,9 +62,11 @@ Snake::Snake( Sprite *origin_node){
     origin = origin_node;
     last = origin_node;
 
+    origin->last_move_direction = RIGHT;
+
     score = 0;
 
-    move_interval = 250;
+    move_interval = INITIAL_MOVE_INTERVAL;
     last_move = 0;
     last_speed_update = 0;
 }
