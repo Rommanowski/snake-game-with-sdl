@@ -74,13 +74,13 @@ int Snake::getSize( ){
     int snake_len = 0;
     Sprite *current = origin;
 
-    printf("----------------------\n");
+    //printf("----------------------\n");
     while( current != nullptr){
-        printf("[%d]: %d x %d \n", snake_len+1, current->x_pos, current->y_pos);
+        //printf("[%d]: %d x %d \n", snake_len+1, current->x_pos, current->y_pos);
         snake_len++;
         current = current->next;
     }
-    printf("\n-------------------\n");
+    //printf("\n-------------------\n");
     return snake_len;
 
 }
@@ -91,25 +91,23 @@ void Snake::enqueue( Sprite *to_add ){
     last = to_add;
 }
 
-// void Snake::move( ){
-//     Sprite *current = origin;
-//     // if( current->next == nullptr )
-//     //     return;
-//     int prev_x = current->next->x_pos;
-//     int prev_y = current->next->y_pos;
-//     while( current->next != nullptr ){
-//         // 'pull' the next node to the previous one
-//         current->next->x_pos = prev_x;
-//         current->next->y_pos = prev_y;
-//         current->setPosition( );
-//         //printf("current: %d x %d    next: %d x %d \n", current->x_pos, current->y_pos, current->next->x_pos, current->next->y_pos);
-//         current = current->next;
-//         if( current->next != nullptr ){
-//             prev_x = current->next->x_pos;
-//             prev_y = current->next->y_pos;
-//         }
-//     }
-// }
+void Snake::dequeue( ){
+
+    if( getSize() <= 1) return;
+
+    Sprite *new_last = last->prev;
+    last = nullptr;
+    free( last );
+    last = new_last;
+    last->next = nullptr;
+}
+
+void Snake::removeTail( ){
+    
+    while( getSize( ) > 1 ){
+        dequeue( );
+    }
+}
 
 void Snake::move( ){
     Sprite *current = last;
@@ -214,6 +212,6 @@ void Apple::findPosition( Snake *snake ){
 
     setPosition( );
 
-    printf("selection:  x: %d    y: %d      at index: %d \n", x_pos, y_pos, random_free_index);
-    printf("----------------------NEXT-------------------\n");
+    //printf("selection:  x: %d    y: %d      at index: %d \n", x_pos, y_pos, random_free_index);
+    //printf("----------------------NEXT-------------------\n");
 }

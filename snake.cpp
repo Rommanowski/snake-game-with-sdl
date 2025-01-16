@@ -94,27 +94,40 @@ int main(){
     while( true )
     {
 		Uint32 starting_tick = SDL_GetTicks();
+        bool restart = 0;
 
         while( SDL_PollEvent(&event))
         {
             if(event.key.keysym.sym == SDLK_n)
             {
-                SDL_Delay(1000);
-                SDL_DestroyWindow( window );
-                SDL_Quit();
+                // SDL_Delay(1000);
+                // SDL_DestroyWindow( window );
+                // SDL_Quit();
                 
-                main();
+                // main();
+                snake->removeTail( );
+                head->x_pos = 4;
+                head->y_pos = 4;
+                x_move = 1;
+                y_move = 0;
+                head->setPosition( );
+                snake = new Snake( head );
+                snake->lengthen( green );
+                snake->lengthen( green );
+                apple.findPosition( snake );
+                restart = true;
                 continue;
             }
             else if( handleKeys( &x_move, &y_move, event, head ) ){
                 SDL_DestroyWindow( window );
                 SDL_Quit();
-                free( snake );
-                free ( head );
-                SDL_FreeSurface( screen );
-                SDL_FreeSurface( charset );
+
                 return 0;
             }
+        }
+        if( restart ){
+            SDL_Delay( 750 );
+            continue;
         }
 
 		cap_framerate(starting_tick);
@@ -139,22 +152,24 @@ int main(){
                     main();
                 }
 
+            }
+
+            if( snake->last_speed_update + SPEED_UPDATE_INTERVAL <= starting_tick ){
+
+                snake->last_speed_update = starting_tick;
+                snake->speedUp( );
+
+            }
+
+            if( ( head->x_pos == apple.x_pos ) && ( head->y_pos == apple.y_pos ) ){
+                apple.findPosition( snake );
+                snake->lengthen( green );
+                //snake->removeTail( );
+                printf("SNAKE SIZE:[%d]\n", snake->getSize());
+                snake->score++;
+            }
+
         }
-
-        if( snake->last_speed_update + SPEED_UPDATE_INTERVAL <= starting_tick ){
-
-            snake->last_speed_update = starting_tick;
-            snake->speedUp( );
-
-        }
-
-        if( ( head->x_pos == apple.x_pos ) && ( head->y_pos == apple.y_pos ) ){
-            apple.findPosition( snake );
-            snake->lengthen( green );
-            snake->score++;
-        }
-
-    }
      
         background.draw( screen );
         //head->draw( screen );

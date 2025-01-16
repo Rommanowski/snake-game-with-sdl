@@ -62,6 +62,7 @@ class Snake{
         Sprite *getLast( );
         void enqueue( Sprite *to_add );
         void dequeue( );
+        void removeTail( );
         void move( );
         void drawAll( SDL_Surface* destination );
         void lengthen( Uint32 color );
