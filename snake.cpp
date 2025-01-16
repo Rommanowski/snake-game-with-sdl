@@ -86,6 +86,7 @@ int main(){
     SDL_Event event;
     bool running = 1;
     int iter = 0;
+    int timer_offset = 0;
 
     int x_move = 1, y_move = 0;
 
@@ -100,22 +101,18 @@ int main(){
         {
             if(event.key.keysym.sym == SDLK_n)
             {
-                // SDL_Delay(1000);
-                // SDL_DestroyWindow( window );
-                // SDL_Quit();
-                
-                // main();
-                snake->removeTail( );
-                head->x_pos = 4;
-                head->y_pos = 4;
-                x_move = 1;
-                y_move = 0;
-                head->setPosition( );
-                snake = new Snake( head );
-                snake->lengthen( green );
-                snake->lengthen( green );
-                apple.findPosition( snake );
-                restart = true;
+                // snake->removeTail( );
+                // head->x_pos = 4;
+                // head->y_pos = 4;
+                // x_move = 1;
+                // y_move = 0;
+                // head->setPosition( );
+                // snake = new Snake( head );
+                // snake->lengthen( green );
+                // snake->lengthen( green );
+                // apple.findPosition( snake );
+                // restart = true;
+                restartGame( &snake, head, apple, &x_move, &y_move, &restart, green );
                 continue;
             }
             else if( handleKeys( &x_move, &y_move, event, head ) ){
@@ -143,13 +140,14 @@ int main(){
             snake->last_move = starting_tick;
 
             if(snake->collision()){
-                if( gameOver( head, red, screen, charset, window, snake, event ) ){
-                    return 0;
+                if( !gameOver( head, red, screen, charset, window, snake, event ) ){
+                    restartGame( &snake, head, apple, &x_move, &y_move, &restart, green );
+                    continue;
                 }
                 else{
                     SDL_DestroyWindow( window );
                     SDL_Quit();
-                    main();
+                    return 0;
                 }
 
             }

@@ -17,5 +17,7 @@ void DrawString(SDL_Surface *screen, int x, int y, const char *text, SDL_Surface
 
 int gameOver( Sprite *head, Uint32 color, SDL_Surface *screen, SDL_Surface *charset, SDL_Window *window, Snake *snake, SDL_Event event );
 
+void restartGame( Snake **snake, Sprite *head, Apple apple, int *x_move,
+                  int *y_move, bool *restart, Uint32 green );
 
 #endif

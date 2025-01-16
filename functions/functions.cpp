@@ -173,21 +173,30 @@ int gameOver( Sprite *head, Uint32 color, SDL_Surface *screen, SDL_Surface *char
         while (SDL_PollEvent( &event ) ){
             if( event.key.keysym.sym == SDLK_n)
             {
-                // SDL_Delay(1000);
-                // SDL_DestroyWindow( window );
-                // SDL_Quit();
-                // main();
-                // continue;
                 return 0;
+
             }
             else if( event.key.keysym.sym == SDLK_ESCAPE || event.type == SDL_QUIT )
             {
-                // SDL_Delay(1000);
-                // SDL_DestroyWindow( window );
-                // SDL_Quit();
                 return 1;
             }
         }
     }
 }
 
+void restartGame( Snake **snake, Sprite *head, Apple apple, int *x_move,
+                  int *y_move, bool *restart, Uint32 green ){
+
+    (*snake)->removeTail( );
+    head->x_pos = 4;
+    head->y_pos = 4;
+    *x_move = 1;
+    *y_move = 0;
+    head->setPosition( );
+    head->last_move_direction = RIGHT;
+    *snake = new Snake( head );
+    (*snake)->lengthen( green );
+    (*snake)->lengthen( green );
+    apple.findPosition( (*snake) );
+    *restart = true;
+}
