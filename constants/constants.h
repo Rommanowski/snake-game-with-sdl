@@ -25,7 +25,7 @@
 
 #define FPS 50
 #define SPEED_UPDATE_INTERVAL (10 * 1000)       // speed changes every 10 seconds
-#define INITIAL_MOVE_INTERVAL 300
+#define INITIAL_MOVE_INTERVAL 250
 #define MIN_MOVE_INTERVAL 50
 
 

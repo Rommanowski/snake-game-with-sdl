@@ -78,4 +78,33 @@ class Apple : public Sprite{
         void findPosition( Snake *Snake );
 };
 
+class RedDot : public Apple{
+
+    public:
+        RedDot( Uint32 color );
+        int time_left;
+        bool visible;
+        int time_to_show_up;
+        
+        void displayDot( Snake *snake, SDL_Surface *screen );
+};
+
+class Bar{
+    
+    protected:
+        SDL_Surface *image;
+        SDL_Rect rect;
+        int origin_x, origin_y;
+
+    public:
+        int direction;  // up, down, right, left
+        int x_pos, y_pos;
+
+        Bar( Uint32 color, int x = 0, int y = 0 , int w = 100, int h = 10 );
+
+        void draw( SDL_Surface *destination);
+
+};
+
+
 #endif

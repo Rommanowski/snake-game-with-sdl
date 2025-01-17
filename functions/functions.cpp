@@ -87,7 +87,6 @@ int handleKeys( int *x_move, int *y_move, SDL_Event event, Sprite *head ){
                 if( head->last_move_direction == UP ) break;
                 *y_move = 1;
                 *x_move = 0;
-                printf("ZMIENIONO KIERUNEK NA DOWN\n");
                 head->direction = DOWN;
                 break;
             // up

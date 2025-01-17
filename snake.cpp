@@ -48,11 +48,12 @@ int main(){
 
 	// colors
     Uint32 gray = SDL_MapRGB( screen->format, 100, 100, 100);
-	Uint32 grass = SDL_MapRGB( screen-> format, 50, 50, 100);
+	Uint32 grass = SDL_MapRGB( screen-> format, 50, 100, 50);
     Uint32 green = SDL_MapRGB( screen->format, 50, 255, 50);
     Uint32 red = SDL_MapRGB( screen->format, 255, 50, 50);
-    Uint32 blue = SDL_MapRGB( screen->format, 50, 50, 255);
+    Uint32 blue = SDL_MapRGB( screen->format, 100, 150, 255);
     Uint32 brown = SDL_MapRGB( screen->format, 150, 75, 0);
+    Uint32 aqua = SDL_MapRGB( screen->format, 173, 216, 230);
     // colors
 
     // gray background
@@ -65,7 +66,8 @@ int main(){
     Snake *snake = new Snake( head );
 
     //APPLE
-    Apple apple( red, 2, 2, PLAYER_SIZE, PLAYER_SIZE);
+    Apple apple( blue, 2, 2, PLAYER_SIZE, PLAYER_SIZE);
+    RedDot dot( red );
 
     for(int i=0; i<8; ++i){
         snake->lengthen( green );
@@ -148,8 +150,6 @@ int main(){
 
                 apple.findPosition( snake );
                 snake->lengthen( green );
-                //snake->removeTail( );
-                printf("SNAKE SIZE:[%d]\n", snake->getSize());
                 snake->score++;
             }
         }
@@ -157,9 +157,11 @@ int main(){
         background.draw( screen );
         snake->drawAll( screen );
         apple.draw( screen );
+        dot.displayDot( snake, screen );
+        
 
-        sprintf(game_info, " Pts: %d     time: %.2f     snake speed: %.2f ",
-                snake->score, float( starting_tick)  / 1000, float( 1000 ) / snake->move_interval );
+        sprintf(game_info, " Pts: %d     time: %.2f     speed: %.2f     length: %d ",
+                snake->score, float( starting_tick)  / 1000, float( 1000 ) / snake->move_interval, snake->getSize( ) );
         DrawString( screen, CENTER_TEXT(game_info), 50, game_info, charset );
 
 		SDL_UpdateWindowSurface( window );

@@ -178,7 +178,7 @@ bool Snake::isSnake( int y_pos, int x_pos ){
     return 0;
 }
 
-Apple::Apple( Uint32 color, int x, int y, int w, int h)
+Apple::Apple( Uint32 color, int x, int y, int w, int h )
     : Sprite( color, x, y, w, h ){
     image = SDL_CreateRGBSurface(0, w, h, 32, 0, 0, 0, 0);
     SDL_FillRect(image, NULL, color);
@@ -217,3 +217,70 @@ void Apple::findPosition( Snake *snake ){
     //printf("selection:  x: %d    y: %d      at index: %d \n", x_pos, y_pos, random_free_index);
     //printf("----------------------NEXT-------------------\n");
 }
+
+RedDot::RedDot( Uint32 color )
+    : Apple( color, X_BORDER+2, Y_BORDER+2, PLAYER_SIZE, PLAYER_SIZE ){
+        image = SDL_CreateRGBSurface(0, PLAYER_SIZE, PLAYER_SIZE, 32, 0, 0, 0, 0);
+        SDL_FillRect(image, NULL, color);
+        rect = image->clip_rect;
+        rect.x = X_BORDER + 2;
+        rect.y = Y_BORDER + 2;
+        setPosition( );
+        visible = false;
+        time_left = 0;
+        time_to_show_up = RANDOM(2 * 1000, 5 * 1000) + SDL_GetTicks( ); // pojawi sie za od X do Y sekund
+    }
+
+void RedDot::displayDot( Snake *snake, SDL_Surface *screen ){
+    Sprite *head = snake->origin;
+    if( SDL_GetTicks( ) >= time_to_show_up  && !visible ){
+        visible = true;
+        time_left = 5 * 1000;
+        findPosition( snake );
+
+    } 
+    if( visible ){
+        Uint32 brown = SDL_MapRGB( screen->format, 150, 75, 0);
+        Uint32 white = SDL_MapRGB( screen->format, 200, 200, 200);
+        Sprite *loading_bar_background = new Sprite( white, 1, -2, 100, 10);
+        loading_bar_background->setPosition( );
+        loading_bar_background->draw( screen );
+        if( ( ( head->x_pos == x_pos ) && ( head->y_pos == y_pos ) ) || time_left <= 0 ){
+            visible = false;
+            time_to_show_up = RANDOM(2 * 1000, 5 * 1000) + SDL_GetTicks( );
+            if( time_left > 0 ) snake->score++;
+            x_pos = X_BORDER + 2;
+            y_pos = Y_BORDER + 2;
+            setPosition( );
+
+            if( ( RANDOM( 1, 2 ) % 2 == 0 ) || ( snake->getSize( ) <= 4 ) ){
+                snake->move_interval = snake->move_interval * 1.5;
+            }
+            else{
+                snake->dequeue( );
+                snake->dequeue( );
+            }
+
+            if( snake->move_interval > INITIAL_MOVE_INTERVAL )
+                snake->move_interval = INITIAL_MOVE_INTERVAL;
+
+        }
+    }
+    time_left -= 1000/FPS;
+    draw( screen );
+}
+
+Bar::Bar( Uint32 color, int x = 0, int y = 0 , int w = PLAYER_SIZE, int h = PLAYER_SIZE ){
+    image = SDL_CreateRGBSurface(0, w, h, 32, 0, 0, 0, 0);
+    SDL_FillRect(image, NULL, color);
+    rect = image->clip_rect;
+    rect.x = x * PLAYER_SIZE + EDGE;
+    rect.y = y * PLAYER_SIZE + ( 2 * EDGE ) + INFO_HEIGHT;
+    x_pos = x;
+    y_pos = y;
+};
+
+void Bar::draw(SDL_Surface* destination) {
+    SDL_BlitSurface(image, NULL, destination, &rect);
+}
+
