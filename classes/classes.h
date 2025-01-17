@@ -98,9 +98,9 @@ class Bar{
 
     public:
         int direction;  // up, down, right, left
-        int x_pos, y_pos;
+        // int x_pos, y_pos;
 
-        Bar( Uint32 color, int x = 0, int y = 0 , int w = 100, int h = 10 );
+        Bar( Uint32 color, int x, int y, int w, int h );
 
         void draw( SDL_Surface *destination);
 

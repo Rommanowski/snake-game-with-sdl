@@ -104,6 +104,10 @@ int main(){
             if(event.key.keysym.sym == SDLK_n)
             {
                 restartGame( &snake, head, apple, &x_move, &y_move, &restart, green, &timer_offset);
+                //dot.findPosition( snake );
+                dot = RedDot( red );
+                apple.findPosition( snake );
+                background.draw( screen );
                 continue;
             }
             else if( handleKeys( &x_move, &y_move, event, head ) ){

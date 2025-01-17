@@ -242,9 +242,20 @@ void RedDot::displayDot( Snake *snake, SDL_Surface *screen ){
     if( visible ){
         Uint32 brown = SDL_MapRGB( screen->format, 150, 75, 0);
         Uint32 white = SDL_MapRGB( screen->format, 200, 200, 200);
-        Sprite *loading_bar_background = new Sprite( white, 1, -2, 100, 10);
-        loading_bar_background->setPosition( );
+
+        int loading_bar_background_width = SCREEN_WIDTH/2;
+        int loading_bar_width = float(loading_bar_background_width) / ( float(5000) / time_left);
+
+        printf("bar: %d \nbackground: %d\n", loading_bar_width, loading_bar_background_width);
+
+        int loading_bar_x = SCREEN_WIDTH/4;
+
+        Bar *loading_bar = new Bar( white, loading_bar_x, 75, loading_bar_width, 16);
+        Bar *loading_bar_background = new Bar( brown, loading_bar_x, 75, loading_bar_background_width, 16);
+
         loading_bar_background->draw( screen );
+        loading_bar->draw( screen );
+
         if( ( ( head->x_pos == x_pos ) && ( head->y_pos == y_pos ) ) || time_left <= 0 ){
             visible = false;
             time_to_show_up = RANDOM(2 * 1000, 5 * 1000) + SDL_GetTicks( );
@@ -252,6 +263,7 @@ void RedDot::displayDot( Snake *snake, SDL_Surface *screen ){
             x_pos = X_BORDER + 2;
             y_pos = Y_BORDER + 2;
             setPosition( );
+            loading_bar_background->draw( screen );
 
             if( ( RANDOM( 1, 2 ) % 2 == 0 ) || ( snake->getSize( ) <= 4 ) ){
                 snake->move_interval = snake->move_interval * 1.5;
@@ -270,14 +282,12 @@ void RedDot::displayDot( Snake *snake, SDL_Surface *screen ){
     draw( screen );
 }
 
-Bar::Bar( Uint32 color, int x = 0, int y = 0 , int w = PLAYER_SIZE, int h = PLAYER_SIZE ){
+Bar::Bar( Uint32 color, int x, int y, int w, int h ){
     image = SDL_CreateRGBSurface(0, w, h, 32, 0, 0, 0, 0);
     SDL_FillRect(image, NULL, color);
     rect = image->clip_rect;
-    rect.x = x * PLAYER_SIZE + EDGE;
-    rect.y = y * PLAYER_SIZE + ( 2 * EDGE ) + INFO_HEIGHT;
-    x_pos = x;
-    y_pos = y;
+    rect.x = x;
+    rect.y = y;
 };
 
 void Bar::draw(SDL_Surface* destination) {
