@@ -67,7 +67,7 @@ int main(){
 
     //APPLE
     Apple apple( blue, 2, 2, PLAYER_SIZE, PLAYER_SIZE);
-    RedDot dot( red );
+    RedDot *dot = new RedDot( red );
 
     for(int i=0; i<8; ++i){
         snake->lengthen( green );
@@ -105,7 +105,7 @@ int main(){
             {
                 restartGame( &snake, head, apple, &x_move, &y_move, &restart, green, &timer_offset);
                 //dot.findPosition( snake );
-                dot = RedDot( red );
+                dot = new RedDot( red );
                 apple.findPosition( snake );
                 background.draw( screen );
                 continue;
@@ -161,7 +161,7 @@ int main(){
         background.draw( screen );
         snake->drawAll( screen );
         apple.draw( screen );
-        dot.displayDot( snake, screen );
+        dot->displayDot( snake, screen );
         
 
         sprintf(game_info, " Pts: %d     time: %.2f     speed: %.2f     length: %d ",

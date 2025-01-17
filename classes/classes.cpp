@@ -232,7 +232,27 @@ RedDot::RedDot( Uint32 color )
     }
 
 void RedDot::displayDot( Snake *snake, SDL_Surface *screen ){
+
     Sprite *head = snake->origin;
+    Uint32 brown = SDL_MapRGB( screen->format, 150, 75, 0);
+    Uint32 white = SDL_MapRGB( screen->format, 200, 200, 200);
+
+    int loading_bar_background_width = SCREEN_WIDTH/2;
+    int loading_bar_width;
+    if(time_left <= 0)
+        loading_bar_width = 0;
+    else
+        loading_bar_width = float(loading_bar_background_width) / ( float(5000) / time_left);
+
+    // printf("bar: %d \nbackground: %d\n", loading_bar_width, loading_bar_background_width);
+
+    int loading_bar_x = SCREEN_WIDTH/4;
+
+    Bar *loading_bar = new Bar( white, loading_bar_x, 75, loading_bar_width, 16);
+    Bar *loading_bar_background = new Bar( brown, loading_bar_x, 75, loading_bar_background_width, 16);
+
+        loading_bar_background->draw( screen );
+        
     if( SDL_GetTicks( ) >= time_to_show_up  && !visible ){
         visible = true;
         time_left = 5 * 1000;
@@ -240,20 +260,7 @@ void RedDot::displayDot( Snake *snake, SDL_Surface *screen ){
 
     } 
     if( visible ){
-        Uint32 brown = SDL_MapRGB( screen->format, 150, 75, 0);
-        Uint32 white = SDL_MapRGB( screen->format, 200, 200, 200);
 
-        int loading_bar_background_width = SCREEN_WIDTH/2;
-        int loading_bar_width = float(loading_bar_background_width) / ( float(5000) / time_left);
-
-        printf("bar: %d \nbackground: %d\n", loading_bar_width, loading_bar_background_width);
-
-        int loading_bar_x = SCREEN_WIDTH/4;
-
-        Bar *loading_bar = new Bar( white, loading_bar_x, 75, loading_bar_width, 16);
-        Bar *loading_bar_background = new Bar( brown, loading_bar_x, 75, loading_bar_background_width, 16);
-
-        loading_bar_background->draw( screen );
         loading_bar->draw( screen );
 
         if( ( ( head->x_pos == x_pos ) && ( head->y_pos == y_pos ) ) || time_left <= 0 ){
