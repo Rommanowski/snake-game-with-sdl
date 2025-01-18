@@ -36,6 +36,7 @@ int main(){
 
     char personal_info[1000];
     char game_info[1000];
+    char requirements[1000];
     SDL_Surface *charset = NULL;
     charset = SDL_LoadBMP( "bitmaps/cs8x8.bmp" );
     if( charset == NULL ){
@@ -80,8 +81,11 @@ int main(){
     Background info( brown, EDGE, EDGE, SCREEN_WIDTH - ( 2 * EDGE ), INFO_HEIGHT);
     info.draw( screen );
 
-    sprintf(personal_info, " SNAKE GAME by --Jakub Romanowski s203681-- 2025 ");
-    DrawString( screen, CENTER_TEXT(personal_info), 30, personal_info, charset );
+    sprintf(personal_info, " ---Jakub Romanowski s203681--- ");
+    DrawString( screen, CENTER_TEXT(personal_info), 25, personal_info, charset );
+
+    sprintf(requirements, " requirements:: 1,2,3,4 A,B,C,D ");
+    DrawString( screen, CENTER_TEXT(requirements), 35, requirements, charset );
 
     SDL_UpdateWindowSurface( window );
 
@@ -94,15 +98,19 @@ int main(){
 
     apple.findPosition( snake );
 
+    bool restart = 0;
     while( true )
     {
 		Uint32 starting_tick = SDL_GetTicks() - timer_offset;
-        bool restart = 0;
+        if( restart ){
+            SDL_Delay( 750 );
+            restart = 0;
+            continue;
+        }
+        restart = 0;
 
         while( SDL_PollEvent(&event))
         {
-            if( restart ) continue;
-            
             if(event.key.keysym.sym == SDLK_n)
             {
                 restartGame( &snake, head, apple, &x_move, &y_move, &restart, green, &timer_offset);
@@ -110,7 +118,7 @@ int main(){
                 dot = new RedDot( red );
                 apple.findPosition( snake );
                 background.draw( screen );
-                continue;
+                break;
             }
             else if( handleKeys( &x_move, &y_move, event, head ) ){
                 SDL_DestroyWindow( window );
@@ -119,10 +127,7 @@ int main(){
                 return 0;
             }
         }
-        if( restart ){
-            SDL_Delay( 750 );
-            continue;
-        }
+        if( restart ) continue;
 
 		//printf("frame time: %d ms (should be: %d ms) \n", current_time, 1000/FPS);
 
@@ -166,7 +171,7 @@ int main(){
         dot->displayDot( snake, screen );
         
 
-        sprintf(game_info, " Pts: %d     time: %.2f     speed: %.2f     length: %d ",
+        sprintf(game_info, " Pts: %d  time: %.2f  speed: %.1f  len: %d ",
                 snake->score, float( starting_tick)  / 1000, float( 1000 ) / snake->move_interval, snake->getSize( ) );
         DrawString( screen, CENTER_TEXT(game_info), 50, game_info, charset );
 

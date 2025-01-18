@@ -155,7 +155,7 @@ bool Snake::collision( ){
 
 void Snake::speedUp( ){
     
-    int new_interval = move_interval / 1.2;
+    int new_interval = move_interval / SPEED_INCREASE_FACTOR;
     
     if( new_interval < MIN_MOVE_INTERVAL ){
         move_interval = MIN_MOVE_INTERVAL;
@@ -180,8 +180,9 @@ bool Snake::isSnake( int y_pos, int x_pos ){
 
 Apple::Apple( Uint32 color, int x, int y, int w, int h )
     : Sprite( color, x, y, w, h ){
-    image = SDL_CreateRGBSurface(0, w, h, 32, 0, 0, 0, 0);
-    SDL_FillRect(image, NULL, color);
+    //image = SDL_CreateRGBSurface(0, w, h, 32, 0, 0, 0, 0);
+    image = SDL_LoadBMP( "bitmaps/blue_dot.bmp" );
+    // SDL_FillRect(image, NULL, color);
     rect = image->clip_rect;
     rect.x = x;
     rect.y = y;
@@ -220,8 +221,9 @@ void Apple::findPosition( Snake *snake ){
 
 RedDot::RedDot( Uint32 color )
     : Apple( color, X_BORDER+2, Y_BORDER+2, PLAYER_SIZE, PLAYER_SIZE ){
-        image = SDL_CreateRGBSurface(0, PLAYER_SIZE, PLAYER_SIZE, 32, 0, 0, 0, 0);
-        SDL_FillRect(image, NULL, color);
+        // image = SDL_CreateRGBSurface(0, PLAYER_SIZE, PLAYER_SIZE, 32, 0, 0, 0, 0);
+        // SDL_FillRect(image, NULL, color);
+        image = SDL_LoadBMP( "bitmaps/red_dot.bmp" );
         rect = image->clip_rect;
         rect.x = X_BORDER + 2;
         rect.y = Y_BORDER + 2;
@@ -265,7 +267,7 @@ void RedDot::displayDot( Snake *snake, SDL_Surface *screen ){
 
         if( ( ( head->x_pos == x_pos ) && ( head->y_pos == y_pos ) ) || time_left <= 0 ){
             visible = false;
-            time_to_show_up = RANDOM(2 * 1000, 5 * 1000) + SDL_GetTicks( );
+            time_to_show_up = RANDOM(MIN_REDDOT_INTERVAL, MAX_REDDOT_INTERVAL) + SDL_GetTicks( );
             if( time_left > 0 ) snake->score++;
             x_pos = X_BORDER + 2;
             y_pos = Y_BORDER + 2;
@@ -276,7 +278,7 @@ void RedDot::displayDot( Snake *snake, SDL_Surface *screen ){
                 
 
             if( ( RANDOM( 1, 2 ) % 2 == 0 ) || ( snake->getSize( ) <= 4 ) ){
-                snake->move_interval = snake->move_interval * 1.5;
+                snake->move_interval = snake->move_interval * SPEED_REDUCTION_FACTOR;
             }
             else{
                 snake->dequeue( );

@@ -196,8 +196,7 @@ void restartGame( Snake **snake, Sprite *head, Apple apple, int *x_move,
     head->last_move_direction = RIGHT;
     head->direction = RIGHT;
     *snake = new Snake( head );
-    (*snake)->lengthen( green );
-    (*snake)->lengthen( green );
+    for( int i=0; i<5; ++i ) (*snake)->lengthen( green );
     apple.findPosition( (*snake) );
     *restart = true;
     *timer_offset = SDL_GetTicks( );
