@@ -101,6 +101,8 @@ int main(){
 
         while( SDL_PollEvent(&event))
         {
+            if( restart ) continue;
+            
             if(event.key.keysym.sym == SDLK_n)
             {
                 restartGame( &snake, head, apple, &x_move, &y_move, &restart, green, &timer_offset);

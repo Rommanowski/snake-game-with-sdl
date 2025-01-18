@@ -272,6 +272,9 @@ void RedDot::displayDot( Snake *snake, SDL_Surface *screen ){
             setPosition( );
             loading_bar_background->draw( screen );
 
+            if( time_left <= 0 ) return;
+                
+
             if( ( RANDOM( 1, 2 ) % 2 == 0 ) || ( snake->getSize( ) <= 4 ) ){
                 snake->move_interval = snake->move_interval * 1.5;
             }
