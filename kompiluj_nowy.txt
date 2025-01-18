@@ -1,1 +1,0 @@
-g++ -O2 -I./sdl/include -L. -o snake snake.cpp functions.cpp classes.cpp -lm -lSDL2 -lpthread -ldl -lrt

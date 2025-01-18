@@ -25,7 +25,7 @@ class Sprite{
 
         void move(int y_move, int x_move);
 
-        void setPosition( );
+        virtual void setPosition( );
         
         void draw( SDL_Surface *destination);
 
@@ -76,6 +76,7 @@ class Apple : public Sprite{
     public:
         Apple( Uint32 color, int x, int y, int w, int h);
         void findPosition( Snake *Snake );
+        void setPosition( ) override;
 };
 
 class RedDot : public Apple{

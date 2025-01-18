@@ -73,7 +73,6 @@ void handleCorners( Sprite *head, int *x_move, int *y_move )
 int handleKeys( int *x_move, int *y_move, SDL_Event event, Sprite *head ){
 
     if( ( event.type == SDL_QUIT ) || ( event.key.keysym.sym == SDLK_ESCAPE )){
-        printf("ESCAPE! \n");
         return 1;
     }
 
@@ -153,7 +152,6 @@ int gameOver( Sprite *head, Uint32 color, SDL_Surface *screen, SDL_Surface *char
     head->draw( screen );
     SDL_UpdateWindowSurface( window );
     SDL_Delay( 750 );
-    printf("KOLIZJA\n");
 
     char text1[1000], text2[1000], text3[1000], text4[1000];
     sprintf(text1, "                            ");
@@ -196,7 +194,7 @@ void restartGame( Snake **snake, Sprite *head, Apple apple, int *x_move,
     head->last_move_direction = RIGHT;
     head->direction = RIGHT;
     *snake = new Snake( head );
-    for( int i=0; i<5; ++i ) (*snake)->lengthen( green );
+    for( int i = 0; i < SNAKE_STARING_SIZE - 1; ++i ) (*snake)->lengthen( green );
     apple.findPosition( (*snake) );
     *restart = true;
     *timer_offset = SDL_GetTicks( );

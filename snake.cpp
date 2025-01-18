@@ -32,11 +32,8 @@ int main(){
              << SDL_GetError() << endl;
     }
 
+    // surfaces ( screen for displaying game, charset for displaying letters )
     SDL_Surface *screen = SDL_GetWindowSurface( window );
-
-    char personal_info[1000];
-    char game_info[1000];
-    char requirements[1000];
     SDL_Surface *charset = NULL;
     charset = SDL_LoadBMP( "cs8x8.bmp" );
     if( charset == NULL ){
@@ -46,6 +43,13 @@ int main(){
         SDL_Quit();
         return 1;
     }
+
+    // strings
+    char personal_info[1000];
+    char game_info[1000];
+    char requirements[1000];
+
+
 
 	// colors
     Uint32 gray = SDL_MapRGB( screen->format, 100, 100, 100);
@@ -60,54 +64,51 @@ int main(){
     // gray background
     SDL_FillRect( screen, NULL, gray);
 
-    // SPRITES
+    // the head of the snake
     Sprite *head = new Sprite( green, 3, 3);
 
-    // SNAKE
+    // SNAKE - collection of Sprites
     Snake *snake = new Snake( head );
+    for(int i=0; i < SNAKE_STARING_SIZE-1; ++i) snake->lengthen( green );       // give snake it's starting length
 
-    //APPLE
+    //APPLE ( apple is actually blue, and dot is the red bonus )
     Apple apple( blue, 2, 2, PLAYER_SIZE, PLAYER_SIZE);
     RedDot *dot = new RedDot( red );
+    apple.findPosition( snake );    // set apple's position
 
-    for(int i=0; i<8; ++i){
-        snake->lengthen( green );
-    }
 
-	// tlo, po ktorym porusza sie waz
+	// make the background of the playable area and the panel with information on top
     Background background( grass, EDGE, 2 * EDGE + INFO_HEIGHT, SCREEN_WIDTH - ( 2 * EDGE ), SCREEN_HEIGHT - ( 3 * EDGE ) );
-    background.draw( screen );
-
     Background info( brown, EDGE, EDGE, SCREEN_WIDTH - ( 2 * EDGE ), INFO_HEIGHT);
+    background.draw( screen );
     info.draw( screen );
 
+    // print some static information on top
     sprintf(personal_info, " ---Jakub Romanowski s203681--- ");
-    DrawString( screen, CENTER_TEXT(personal_info), 25, personal_info, charset );
-
     sprintf(requirements, " requirements:: 1,2,3,4 A,B,C,D ");
+    DrawString( screen, CENTER_TEXT(personal_info), 25, personal_info, charset );
     DrawString( screen, CENTER_TEXT(requirements), 35, requirements, charset );
 
-    SDL_UpdateWindowSurface( window );
-
+    // event ( used to read user input )
     SDL_Event event;
-    bool running = 1;
-    int iter = 0;
+
+    // variables
     int timer_offset = 0;
-
     int x_move = 1, y_move = 0;
-
-    apple.findPosition( snake );
-
     bool restart = 0;
+
+    // the main loop
+    SDL_UpdateWindowSurface( window );
     while( true )
     {
-		Uint32 starting_tick = SDL_GetTicks() - timer_offset;
+		Uint32 starting_tick = SDL_GetTicks() - timer_offset;   // calculate current tick at the beginning of the loop
+        // restart the game if it is desired
         if( restart ){
             SDL_Delay( 750 );
             restart = 0;
             continue;
         }
-        restart = 0;
+        // restart = 0;
 
         while( SDL_PollEvent(&event))
         {
@@ -128,8 +129,6 @@ int main(){
             }
         }
         if( restart ) continue;
-
-		//printf("frame time: %d ms (should be: %d ms) \n", current_time, 1000/FPS);
 
         handleCorners( head, &x_move, &y_move );
 
@@ -178,8 +177,6 @@ int main(){
 		SDL_UpdateWindowSurface( window );
 
 		cap_framerate(starting_tick, timer_offset);
-		// Uint32 current_time = SDL_GetTicks() - starting_tick - timer_offset;
-        // printf("Frame Time: %d ms (Target: %d ms)\n" ,current_time, 1000/FPS );
 
     }
  

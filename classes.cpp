@@ -76,13 +76,10 @@ int Snake::getSize( ){
     int snake_len = 0;
     Sprite *current = origin;
 
-    //printf("----------------------\n");
     while( current != nullptr){
-        //printf("[%d]: %d x %d \n", snake_len+1, current->x_pos, current->y_pos);
         snake_len++;
         current = current->next;
     }
-    //printf("\n-------------------\n");
     return snake_len;
 
 }
@@ -187,6 +184,11 @@ Apple::Apple( Uint32 color, int x, int y, int w, int h )
     rect.x = x;
     rect.y = y;
 }
+void Apple::setPosition( ){
+    rect.x = x_pos * PLAYER_SIZE + EDGE - (DOT_SIZE-PLAYER_SIZE)/2;
+    rect.y = y_pos * PLAYER_SIZE + ( 2 * EDGE ) + INFO_HEIGHT - (DOT_SIZE-PLAYER_SIZE)/2;
+}
+
 void Apple::findPosition( Snake *snake ){
 
     int available_cords_x[X_BORDER * Y_BORDER];
@@ -202,7 +204,6 @@ void Apple::findPosition( Snake *snake ){
                 available_cords_y[index] = i;
                 available_cords_x[index] = j;
                 index++;
-                //printf("index: %d   x: %d   y: %d \n", index, available_cords_x[index-1], available_cords_y[index-1]);
             }
         }
     }
@@ -214,9 +215,6 @@ void Apple::findPosition( Snake *snake ){
     y_pos = available_cords_y[random_free_index];
 
     setPosition( );
-
-    //printf("selection:  x: %d    y: %d      at index: %d \n", x_pos, y_pos, random_free_index);
-    //printf("----------------------NEXT-------------------\n");
 }
 
 RedDot::RedDot( Uint32 color )
@@ -245,8 +243,6 @@ void RedDot::displayDot( Snake *snake, SDL_Surface *screen ){
         loading_bar_width = 0;
     else
         loading_bar_width = float(loading_bar_background_width) / ( float(5000) / time_left);
-
-    // printf("bar: %d \nbackground: %d\n", loading_bar_width, loading_bar_background_width);
 
     int loading_bar_x = SCREEN_WIDTH/4;
 
