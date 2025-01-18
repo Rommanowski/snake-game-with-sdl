@@ -9,9 +9,9 @@ extern "C" {
 #include "./SDL2-2.0.10/include/SDL_main.h"
 }
 
-#include "constants/constants.h"
-#include "classes/classes.h"
-#include "functions/functions.h"
+#include "constants.h"
+#include "classes.h"
+#include "functions.h"
 
 using namespace std;
 
@@ -38,7 +38,7 @@ int main(){
     char game_info[1000];
     char requirements[1000];
     SDL_Surface *charset = NULL;
-    charset = SDL_LoadBMP( "bitmaps/cs8x8.bmp" );
+    charset = SDL_LoadBMP( "cs8x8.bmp" );
     if( charset == NULL ){
         printf("Error with loading the cs8x8.bmp charset!\n");
         SDL_FreeSurface( screen );
