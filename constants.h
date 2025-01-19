@@ -34,6 +34,8 @@
 #define MAX_REDDOT_INTERVAL 10 * 1000          // analogically
 
 #define SNAKE_STARING_SIZE 3                   // snake is this many squares long at start
+#define SNAKE_START_X 3
+#define SNAKE_START_Y 3
 
 
 // just to tell directions apart in more readable form

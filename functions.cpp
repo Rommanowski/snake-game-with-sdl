@@ -182,7 +182,7 @@ int gameOver( Sprite *head, Uint32 color, SDL_Surface *screen, SDL_Surface *char
     }
 }
 
-void restartGame( Snake **snake, Sprite *head, Apple apple, int *x_move,
+void restartGame( Snake **snake, Sprite *head, Apple *apple, int *x_move,
                   int *y_move, bool *restart, Uint32 green, int *timer_offset ){
 
     (*snake)->removeTail( );
@@ -195,7 +195,70 @@ void restartGame( Snake **snake, Sprite *head, Apple apple, int *x_move,
     head->direction = RIGHT;
     *snake = new Snake( head );
     for( int i = 0; i < SNAKE_STARING_SIZE - 1; ++i ) (*snake)->lengthen( green );
-    apple.findPosition( (*snake) );
+    apple->findPosition( (*snake) );
     *restart = true;
     *timer_offset = SDL_GetTicks( );
 }
+
+void displayStaticInfo(SDL_Surface* screen, SDL_Surface* charset) {
+    char personal_info[1000], requirements[1000];
+    sprintf(personal_info, " ---Jakub Romanowski s203681--- ");
+    sprintf(requirements, " requirements:: 1,2,3,4 A,B,C,D ");
+    DrawString(screen, CENTER_TEXT(personal_info), 25, personal_info, charset);
+    DrawString(screen, CENTER_TEXT(requirements), 35, requirements, charset);
+}
+
+void loadResources(SDL_Surface*& charset) {
+    charset = SDL_LoadBMP("cs8x8.bmp");
+    if (charset == NULL) {
+        printf("Error with loading the cs8x8.bmp charset!\n");
+        SDL_Quit();
+        exit(1);
+    }
+}
+
+void initializeWindow(SDL_Window*& window, SDL_Surface*& screen) {
+    window = SDL_CreateWindow( "Wafel! <3", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT + INFO_HEIGHT, 0);
+    if (window == nullptr) {
+        printf("There was an error initializing the window! \n");
+        SDL_Quit();
+        exit(1);
+    }
+    screen = SDL_GetWindowSurface(window);
+}
+
+void initColorPalette( SDL_Surface *screen, Uint32 *gray, Uint32 *grass, Uint32 *green, Uint32 *red, Uint32 *blue, Uint32 *brown, Uint32 *aqua ){
+    *gray = SDL_MapRGB( screen->format, 100, 100, 100);
+	*grass = SDL_MapRGB( screen-> format, 50, 100, 50);
+    *green = SDL_MapRGB( screen->format, 50, 255, 50);
+    *red = SDL_MapRGB( screen->format, 255, 50, 50);
+    *blue = SDL_MapRGB( screen->format, 100, 150, 255);
+    *brown = SDL_MapRGB( screen->format, 150, 75, 0);
+    *aqua = SDL_MapRGB( screen->format, 173, 216, 230);
+}
+
+void handleSnakeSpeed( Snake *snake, int starting_tick ){
+    if( snake->last_speed_update + SPEED_UPDATE_INTERVAL <= starting_tick ){
+
+        snake->last_speed_update = starting_tick;
+        snake->speedUp( );
+    }
+}
+
+void displayDynamicInfo( Snake *snake, int starting_tick, SDL_Surface *screen, SDL_Surface *charset ){
+    char game_info[1000];
+    sprintf(game_info, " Pts: %d  time: %.2f  speed: %.1f  len: %d ",
+            snake->score, float( starting_tick)  / 1000, float( 1000 ) / snake->move_interval, snake->getSize( ) );
+    DrawString( screen, CENTER_TEXT(game_info), 50, game_info, charset );
+}
+
+void drawStuff( SDL_Surface *screen, Sprite *background, Snake *snake, Apple *apple, RedDot *dot ){
+
+        background->draw( screen );
+        snake->drawAll( screen );
+        apple->draw( screen );
+        dot->displayDot( snake, screen );
+
+}
+
+

@@ -77,6 +77,7 @@ class Apple : public Sprite{
         Apple( Uint32 color, int x, int y, int w, int h);
         void findPosition( Snake *Snake );
         void setPosition( ) override;
+        void checkEaten( Snake *snake, SDL_Surface *screen );
 };
 
 class RedDot : public Apple{

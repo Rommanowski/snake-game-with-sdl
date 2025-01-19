@@ -17,55 +17,27 @@ using namespace std;
 
 int main(){
     srand(time(NULL));
+
     SDL_Init( SDL_INIT_EVERYTHING);
+
     // init the window
     SDL_Window *window = NULL;
-    window = SDL_CreateWindow( "Wafel! <3",
-                                SDL_WINDOWPOS_UNDEFINED,
-                                SDL_WINDOWPOS_UNDEFINED,
-                                SCREEN_WIDTH,
-                                SCREEN_HEIGHT + INFO_HEIGHT,
-                                0 );
-    if(window == nullptr)
-    {
-        cout << "There was an error initializing the window! " << endl 
-             << SDL_GetError() << endl;
-    }
+    SDL_Surface *screen;
+    initializeWindow( window, screen );
 
-    // surfaces ( screen for displaying game, charset for displaying letters )
-    SDL_Surface *screen = SDL_GetWindowSurface( window );
+    // charset surface to display letters
     SDL_Surface *charset = NULL;
-    charset = SDL_LoadBMP( "cs8x8.bmp" );
-    if( charset == NULL ){
-        printf("Error with loading the cs8x8.bmp charset!\n");
-        SDL_FreeSurface( screen );
-        SDL_FreeSurface( charset );
-        SDL_Quit();
-        return 1;
-    }
-
-    // strings
-    char personal_info[1000];
-    char game_info[1000];
-    char requirements[1000];
-
-
+    loadResources( charset );
 
 	// colors
-    Uint32 gray = SDL_MapRGB( screen->format, 100, 100, 100);
-	Uint32 grass = SDL_MapRGB( screen-> format, 50, 100, 50);
-    Uint32 green = SDL_MapRGB( screen->format, 50, 255, 50);
-    Uint32 red = SDL_MapRGB( screen->format, 255, 50, 50);
-    Uint32 blue = SDL_MapRGB( screen->format, 100, 150, 255);
-    Uint32 brown = SDL_MapRGB( screen->format, 150, 75, 0);
-    Uint32 aqua = SDL_MapRGB( screen->format, 173, 216, 230);
-    // colors
+    Uint32 gray, grass, green, red, blue, brown, aqua;
+    initColorPalette(screen, &gray, &grass, &green, &red, &blue, &brown, &aqua );
 
     // gray background
     SDL_FillRect( screen, NULL, gray);
 
     // the head of the snake
-    Sprite *head = new Sprite( green, 3, 3);
+    Sprite *head = new Sprite( green, SNAKE_START_X, SNAKE_START_Y);
 
     // SNAKE - collection of Sprites
     Snake *snake = new Snake( head );
@@ -84,10 +56,7 @@ int main(){
     info.draw( screen );
 
     // print some static information on top
-    sprintf(personal_info, " ---Jakub Romanowski s203681--- ");
-    sprintf(requirements, " requirements:: 1,2,3,4 A,B,C,D ");
-    DrawString( screen, CENTER_TEXT(personal_info), 25, personal_info, charset );
-    DrawString( screen, CENTER_TEXT(requirements), 35, requirements, charset );
+    displayStaticInfo( screen, charset );
 
     // event ( used to read user input )
     SDL_Event event;
@@ -108,30 +77,31 @@ int main(){
             restart = 0;
             continue;
         }
-        // restart = 0;
 
+        // handle user's input
         while( SDL_PollEvent(&event))
         {
+            // check if n pressed to start the new game
             if(event.key.keysym.sym == SDLK_n)
             {
-                restartGame( &snake, head, apple, &x_move, &y_move, &restart, green, &timer_offset);
-                //dot.findPosition( snake );
+                restartGame( &snake, head, &apple, &x_move, &y_move, &restart, green, &timer_offset);
                 dot = new RedDot( red );
-                apple.findPosition( snake );
                 background.draw( screen );
                 break;
             }
-            else if( handleKeys( &x_move, &y_move, event, head ) ){
+            // handleKeys() switches snakes direction based on keys pressed, but returns 1 if user wants to quit the game
+            else if( handleKeys( &x_move, &y_move, event, head ) ){ 
                 SDL_DestroyWindow( window );
                 SDL_Quit();
-
                 return 0;
             }
         }
-        if( restart ) continue;
+        if( restart ) continue;   // restart is being set to 1 in restartGame() function
 
+        // change snake's direction if it is on the edge of the map
         handleCorners( head, &x_move, &y_move );
 
+        // move the snake if enough time has passed
         if( snake->last_move + snake->move_interval <= starting_tick ){
 
             snake->move( );
@@ -139,8 +109,9 @@ int main(){
             snake->last_move = starting_tick;
 
             if(snake->collision()){
+                // gameOver() returns 1 if user wants to quit after losing the game, and 0 if they want to continue
                 if( !gameOver( head, red, screen, charset, window, snake, event ) ){
-                    restartGame( &snake, head, apple, &x_move, &y_move, &restart, green, &timer_offset );   
+                    restartGame( &snake, head, &apple, &x_move, &y_move, &restart, green, &timer_offset );   
                     continue;
                 }
                 else{
@@ -149,33 +120,20 @@ int main(){
                     return 0;
                 }
             }
-
-            if( snake->last_speed_update + SPEED_UPDATE_INTERVAL <= starting_tick ){
-
-                snake->last_speed_update = starting_tick;
-                snake->speedUp( );
-            }
-
-            if( ( head->x_pos == apple.x_pos ) && ( head->y_pos == apple.y_pos ) ){
-
-                apple.findPosition( snake );
-                snake->lengthen( green );
-                snake->score++;
-            }
+            // speed the snake up if it should happen
+            handleSnakeSpeed( snake, starting_tick );
+            // if snake's head and apple have the same position, move the apple, lengthen the snake, update score
+            apple.checkEaten( snake, screen );
         }
      
-        background.draw( screen );
-        snake->drawAll( screen );
-        apple.draw( screen );
-        dot->displayDot( snake, screen );
-        
+        // display the state of the game on top
+        displayDynamicInfo( snake, starting_tick, screen, charset);
 
-        sprintf(game_info, " Pts: %d  time: %.2f  speed: %.1f  len: %d ",
-                snake->score, float( starting_tick)  / 1000, float( 1000 ) / snake->move_interval, snake->getSize( ) );
-        DrawString( screen, CENTER_TEXT(game_info), 50, game_info, charset );
+        // draw the snake and bonuses
+        drawStuff( screen, &background, snake, &apple, dot );
 
+        // update window and handle the framerate
 		SDL_UpdateWindowSurface( window );
-
 		cap_framerate(starting_tick, timer_offset);
 
     }

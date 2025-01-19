@@ -123,6 +123,10 @@ void Snake::move( ){
     }
 }
 
+// void Snake::handleMovement( int starting_tick ){
+
+// }
+
 void Snake::drawAll( SDL_Surface* destination ){
     Sprite *current = origin;
     while( current != nullptr ){
@@ -181,8 +185,7 @@ Apple::Apple( Uint32 color, int x, int y, int w, int h )
     image = SDL_LoadBMP( "blue_dot.bmp" );
     // SDL_FillRect(image, NULL, color);
     rect = image->clip_rect;
-    rect.x = x;
-    rect.y = y;
+    
 }
 void Apple::setPosition( ){
     rect.x = x_pos * PLAYER_SIZE + EDGE - (DOT_SIZE-PLAYER_SIZE)/2;
@@ -215,6 +218,17 @@ void Apple::findPosition( Snake *snake ){
     y_pos = available_cords_y[random_free_index];
 
     setPosition( );
+}
+
+void Apple::checkEaten( Snake *snake, SDL_Surface *screen ){
+    Sprite *head = snake->origin;
+    Uint32 green = SDL_MapRGB( screen->format, 50, 255, 50);
+    if( ( head->x_pos == x_pos ) && ( head->y_pos == y_pos ) ){
+
+        findPosition( snake );
+        snake->lengthen( green );
+        snake->score++;
+    }
 }
 
 RedDot::RedDot( Uint32 color )
