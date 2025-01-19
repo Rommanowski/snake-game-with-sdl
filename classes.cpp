@@ -123,9 +123,12 @@ void Snake::move( ){
     }
 }
 
-// void Snake::handleMovement( int starting_tick ){
-
-// }
+void Snake::handleMovement( int starting_tick, int y_move, int x_move ){
+    Sprite *head = origin;
+    move( );
+    head->move( y_move, x_move );
+    last_move = starting_tick;
+}
 
 void Snake::drawAll( SDL_Surface* destination ){
     Sprite *current = origin;

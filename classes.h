@@ -64,6 +64,7 @@ class Snake{
         void dequeue( );
         void removeTail( );
         void move( );
+        void handleMovement( int starting_tick, int y_move, int x_move );
         void drawAll( SDL_Surface* destination );
         void lengthen( Uint32 color );
         bool collision( );

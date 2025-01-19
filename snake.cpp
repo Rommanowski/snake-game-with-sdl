@@ -104,9 +104,7 @@ int main(){
         // move the snake if enough time has passed
         if( snake->last_move + snake->move_interval <= starting_tick ){
 
-            snake->move( );
-            head->move( y_move, x_move );
-            snake->last_move = starting_tick;
+            snake->handleMovement( starting_tick, y_move, x_move );
 
             if(snake->collision()){
                 // gameOver() returns 1 if user wants to quit after losing the game, and 0 if they want to continue
