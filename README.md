@@ -22,8 +22,8 @@ The elapsed time, points, and current snake length are displayed on the screen, 
 
 ## Compilation
 
-compile the program using the command in 'compile.txt'
-" . compile.txt" in linux terminal
+compile the program using the command in 'compile.txt'.
+You can type ". compile.txt" in linux terminal.
 
 ## How to Play
 
