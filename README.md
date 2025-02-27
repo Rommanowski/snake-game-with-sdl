@@ -7,6 +7,9 @@ This project is a classic Snake game.
 Players can start a new game at any time by pressing 'n' or exit the game immediately by pressing Esc.
 The elapsed time, points, and current snake length are displayed on the screen, providing transparency about the game's functionality.
 
+Video demonstration:
+https://youtu.be/jv3KsRm4bVc
+
 
 ## Features
 
